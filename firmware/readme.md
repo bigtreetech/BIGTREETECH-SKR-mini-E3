@@ -6,9 +6,9 @@ which is the PlatformIO plugin, and then click "Open Project" to open the projec
 * After opening the project, go to the platformio.ini file and change the default environment from megaatmega2560 to BIGTREE_SKR_MINI, `env_default = BIGTREE_SKR_MINI`![image](https://user-images.githubusercontent.com/25599056/60634202-bac3cb00-9e40-11e9-9d66-089c2b925138.png)
 * Then go to the Configuration.h file and modify it:
 
-`#define SERIAL_PORT -1`
+`#define SERIAL_PORT 2`
 
-`#define SERIAL_PORT_2 2`
+`#define SERIAL_PORT_2 -1`
 
 `#define BAUDRATE 115200`
 
