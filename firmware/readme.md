@@ -31,7 +31,7 @@ which is the PlatformIO plugin, and then click "Open Project" to open the projec
 ![image](https://user-images.githubusercontent.com/25599056/60634675-5ace2400-9e42-11e9-8441-9de7e1480962.png)
 * comment out `//#define EEPROM_SETTINGS`
 ![image](https://user-images.githubusercontent.com/25599056/61014947-5f538900-a3bc-11e9-8017-2bcf9bc18411.png)
-* comment out `//#define SPEAKER`
+* comment out `//#define SPEAKER`, if you don't comment out this, it will freeze when you pressed button
 
 ![image](https://user-images.githubusercontent.com/25599056/61014965-6e3a3b80-a3bc-11e9-8035-6463a2757cd7.png)
 * After the modification is complete, press Ctrl+Alt+B, and platformio will automatically download the compiled component and compile it. After the compilation is successful, a firmware.bin file will be generated in the .pioenvs\BIGTREE_SKR_MINI directory. We will copy this file to the TF card of the motherboard, and then reset the motherboard, so that the firmware is burned into the motherboard, the red led D10 will always blink in the burning, After the burning is completed, D10 stop blink, and the file name in the TF card will change from 'firmware.bin' to 'FIRMWARE.CUR'
