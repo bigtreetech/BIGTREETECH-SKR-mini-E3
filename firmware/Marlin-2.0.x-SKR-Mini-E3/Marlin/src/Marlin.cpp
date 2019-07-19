@@ -827,9 +827,6 @@ void stop() {
 void setup() {
 
   HAL_init();
-  #ifdef USB_CONNECT
-   OUT_WRITE(USB_CONNECT, USB_CONNECT_INVERTING);
-  #endif
 
   #if HAS_DRIVER(L6470)
     L6470.init();         // setup SPI and then init chips
