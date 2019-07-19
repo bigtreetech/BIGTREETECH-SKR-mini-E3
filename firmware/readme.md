@@ -4,6 +4,7 @@
 * In the lower left corner of the VSCode, you can see that there’s one more icon, please see the picture below, 
 which is the PlatformIO plugin, and then click "Open Project" to open the project.![image](https://user-images.githubusercontent.com/25599056/60634053-0aee5d80-9e40-11e9-9658-7cac8b6d1002.png)
 * After opening the project, go to the platformio.ini file and change the default environment from megaatmega2560 to BIGTREE_SKR_MINI, `env_default = BIGTREE_SKR_MINI`![image](https://user-images.githubusercontent.com/25599056/60634202-bac3cb00-9e40-11e9-9d66-089c2b925138.png)
+* In the repo you just cloned, copy the contents of config\examples\Creality\Ender-3\ to Marlin
 * Then go to the Configuration.h file and modify it:
 
 `#define SERIAL_PORT 2`
@@ -28,4 +29,9 @@ which is the PlatformIO plugin, and then click "Open Project" to open the projec
 
 `#define E0_SLAVE_ADDRESS 3`
 ![image](https://user-images.githubusercontent.com/25599056/60634675-5ace2400-9e42-11e9-8441-9de7e1480962.png)
+* comment out `//#define EEPROM_SETTINGS`
+![image](https://user-images.githubusercontent.com/25599056/61014947-5f538900-a3bc-11e9-8017-2bcf9bc18411.png)
+* comment out `//#define SPEAKER`, if you don't comment out this, it will freeze when you pressed button
+
+![image](https://user-images.githubusercontent.com/25599056/61014965-6e3a3b80-a3bc-11e9-8035-6463a2757cd7.png)
 * After the modification is complete, press Ctrl+Alt+B, and platformio will automatically download the compiled component and compile it. After the compilation is successful, a firmware.bin file will be generated in the .pioenvs\BIGTREE_SKR_MINI directory. We will copy this file to the TF card of the motherboard, and then reset the motherboard, so that the firmware is burned into the motherboard, the red led D10 will always blink in the burning, After the burning is completed, D10 stop blink, and the file name in the TF card will change from 'firmware.bin' to 'FIRMWARE.CUR'
