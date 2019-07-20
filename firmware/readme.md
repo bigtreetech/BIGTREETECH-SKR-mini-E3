@@ -35,3 +35,13 @@ which is the PlatformIO plugin, and then click "Open Project" to open the projec
 
 ![image](https://user-images.githubusercontent.com/25599056/61014965-6e3a3b80-a3bc-11e9-8035-6463a2757cd7.png)
 * After the modification is complete, press Ctrl+Alt+B, and platformio will automatically download the compiled component and compile it. After the compilation is successful, a firmware.bin file will be generated in the .pioenvs\BIGTREE_SKR_MINI directory. We will copy this file to the TF card of the motherboard, and then reset the motherboard, so that the firmware is burned into the motherboard, the red led D10 will always blink in the burning, After the burning is completed, D10 stop blink, and the file name in the TF card will change from 'firmware.bin' to 'FIRMWARE.CUR'
+
+### NOTE
+If you connect to USB CDC Serial when startup, if will report a MAX TEMP ERROR, if you get this error
+Please wait 4-5s, after motherboard startup successed, then connect USB CDC Sereial will be ok, if you don't want to wait, Please uncomment this
+`#define BOGUS_TEMPERATURE_FAILSAFE_OVERRIDE ` in here, 
+ 
+ https://github.com/bigtreetech/BIGTREETECH-SKR-mini-E3-/blob/1016c47352a5a30e4ea25dda2652418618295655/firmware/Marlin-2.0.x-SKR-Mini-E3/Marlin/src/pins/pins_BIGTREE_SKR_MINI_E3.h#L35
+
+this is just a temporary solution.
+I will continue to debug this issue, and when I find the final solution, I will update it.
