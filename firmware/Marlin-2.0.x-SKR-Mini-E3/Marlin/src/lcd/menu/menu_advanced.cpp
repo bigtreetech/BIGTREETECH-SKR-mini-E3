@@ -554,7 +554,7 @@ void menu_backlash();
       #else
         MENU_MULTIPLIER_ITEM_EDIT(float52sign, MSG_VC_JERK, &planner.max_jerk[C_AXIS], 0.1f, 990);
       #endif
-      #if DISABLED(JUNCTION_DEVIATION) || DISABLED(LIN_ADVANCE)
+      #if !BOTH(JUNCTION_DEVIATION, LIN_ADVANCE)
         EDIT_JERK(E);
       #endif
     #endif
@@ -603,7 +603,12 @@ void menu_backlash();
     static void lcd_init_eeprom_confirm() {
       do_select_screen(
         PSTR(MSG_BUTTON_INIT), PSTR(MSG_BUTTON_CANCEL),
-        []{ ui.completion_feedback(settings.init_eeprom()); },
+        []{
+          const bool inited = settings.init_eeprom();
+          #if HAS_BUZZER
+            ui.completion_feedback(inited);
+          #endif
+        },
         ui.goto_previous_screen,
         PSTR(MSG_INIT_EEPROM), nullptr, PSTR("?")
       );
@@ -698,8 +703,11 @@ void menu_advanced_settings() {
       //
       // Toggle the SD Firmware Update state in EEPROM
       //
-      const bool new_state = !settings.sd_update_status();
-      ui.completion_feedback(settings.set_sd_update_status(new_state));
+      const bool new_state = !settings.sd_update_status(),
+                 didset = settings.set_sd_update_status(new_state);
+      #if HAS_BUZZER
+        ui.completion_feedback(didset);
+      #endif
       ui.return_to_status();
       if (new_state) LCD_MESSAGEPGM(MSG_RESET_PRINTER); else ui.reset_status();
     });

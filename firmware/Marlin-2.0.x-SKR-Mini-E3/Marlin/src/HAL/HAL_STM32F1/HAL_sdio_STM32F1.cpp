@@ -25,6 +25,8 @@
 
 #include <libmaple/stm32.h>
 
+#include "../../inc/MarlinConfig.h" // Allow pins/pins.h to set density
+
 #if defined(STM32_HIGH_DENSITY) || defined(STM32_XL_DENSITY)
 
 #include "HAL_sdio_STM32F1.h"
@@ -167,9 +169,9 @@ bool SDIO_WriteBlock(uint32_t blockAddress, const uint8_t *data) {
 
 inline uint32_t SDIO_GetCardState(void) { return SDIO_CmdSendStatus(SdCard.RelCardAdd << 16U) ? (SDIO_GetResponse(SDIO_RESP1) >> 9U) & 0x0FU : SDIO_CARD_ERROR; }
 
-// --------------------------------------------------------------------------
+// ------------------------
 // SD Commands and Responses
-// --------------------------------------------------------------------------
+// ------------------------
 
 void SDIO_SendCommand(uint16_t command, uint32_t argument) { SDIO->ARG = argument; SDIO->CMD = (uint32_t)(SDIO_CMD_CPSMEN | command); }
 uint8_t SDIO_GetCommandResponse(void) { return (uint8_t)(SDIO->RESPCMD); }

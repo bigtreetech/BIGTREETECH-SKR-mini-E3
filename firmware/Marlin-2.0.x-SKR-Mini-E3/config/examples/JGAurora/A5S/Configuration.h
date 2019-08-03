@@ -73,9 +73,14 @@
 // User-specified version info of this build to display in [Pronterface, etc] terminal window during
 // startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
 // build by the user have been successfully uploaded into firmware.
+
+//  ╦╔═╗╔═╗┬ ┬┬─┐┌─┐┬─┐┌─┐╔═╗┌─┐┬─┐┬ ┬┌┬┐ ┌─┐┌─┐┌┬┐
+//  ║║ ╦╠═╣│ │├┬┘│ │├┬┘├─┤╠╣ │ │├┬┘│ ││││ │  │ ││││
+// ╚╝╚═╝╩ ╩└─┘┴└─└─┘┴└─┴ ┴╚  └─┘┴└─└─┘┴ ┴o└─┘└─┘┴ ┴
+
 #define STRING_CONFIG_H_AUTHOR "(Roberto Mariani & Samuel Pinches)" // Who made the changes.
 #define SHOW_BOOTSCREEN
-#define STRING_SPLASH_LINE1 "Marlin 2b6 (10/6/19)" // will be shown during bootup in line 1
+#define STRING_SPLASH_LINE1 "JG-A5S v2.0 (29-7-19)" // will be shown during bootup in line 1
 #define STRING_SPLASH_LINE2 "JGAuroraForum.com"         // will be shown during bootup in line 2
 
 /**
@@ -129,18 +134,16 @@
 // Enable the Bluetooth serial interface on AT90USB devices
 //#define BLUETOOTH
 
-// The following define selects which electronics board you have.
-// Please choose the name from boards.h that matches your setup
+// Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
   #define MOTHERBOARD BOARD_JGAURORA_A5S_A1
 #endif
 
-// Optional custom name for your RepStrap or other custom machine
-// Displayed in the LCD "Ready" message
+// Name displayed in the LCD "Ready" message and Info menu
 #define CUSTOM_MACHINE_NAME "JGAurora A5S"
 
-// Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
-// You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
+// Printer's unique ID, used by some programs to differentiate between machines.
+// Choose your own or use a service like http://www.uuidgenerator.net/version4
 //#define MACHINE_UUID "00000000-0000-0000-0000-000000000000"
 
 // @section extruder
@@ -277,7 +280,14 @@
     #define SWITCHING_TOOLHEAD_SERVO_ANGLES { 0, 180 }  // (degrees) Angles for Lock, Unlock
   #elif ENABLED(MAGNETIC_SWITCHING_TOOLHEAD)
     #define SWITCHING_TOOLHEAD_Y_RELEASE      5         // (mm) Security distance Y axis
-    #define SWITCHING_TOOLHEAD_X_SECURITY   -35         // (mm) Security distance X axis
+    #define SWITCHING_TOOLHEAD_X_SECURITY   { 90, 150 } // (mm) Security distance X axis (T0,T1)
+    //#define PRIME_BEFORE_REMOVE                       // Prime the nozzle before release from the dock
+    #if ENABLED(PRIME_BEFORE_REMOVE)
+      #define SWITCHING_TOOLHEAD_PRIME_MM           20  // (mm)   Extruder prime length
+      #define SWITCHING_TOOLHEAD_RETRACT_MM         10  // (mm)   Retract after priming length
+      #define SWITCHING_TOOLHEAD_PRIME_FEEDRATE    300  // (mm/m) Extruder prime feedrate
+      #define SWITCHING_TOOLHEAD_RETRACT_FEEDRATE 2400  // (mm/m) Extruder retract feedrate
+    #endif
   #elif ENABLED(ELECTROMAGNETIC_SWITCHING_TOOLHEAD)
     #define SWITCHING_TOOLHEAD_Z_HOP          2         // (mm) Z raise for switching
   #endif
@@ -515,7 +525,7 @@
 #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
 
 #if ENABLED(PIDTEMPBED)
-
+  //#define MIN_BED_POWER 0
   //#define PID_BED_DEBUG // Sends debug data to the serial port.
 
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
@@ -720,7 +730,7 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 360, 150, 15, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 360, 150, 30, 40 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -742,9 +752,15 @@
 #define DEFAULT_RETRACT_ACCELERATION  500    // E acceleration for retracts
 #define DEFAULT_TRAVEL_ACCELERATION   500    // X, Y, Z acceleration for travel (non printing) moves
 
-//
-// Use Junction Deviation instead of traditional Jerk Limiting
-//
+/**
+ * Junction Deviation
+ *
+ * Use Junction Deviation instead of traditional Jerk Limiting
+ *
+ * See:
+ *   https://reprap.org/forum/read.php?1,739819
+ *   http://blog.kyneticcnc.com/2018/10/computing-junction-deviation-for-marlin.html
+ */
 #define JUNCTION_DEVIATION
 #if ENABLED(JUNCTION_DEVIATION)
   #define JUNCTION_DEVIATION_MM 0.02  // (mm) Distance from real junction edge
@@ -910,7 +926,7 @@
 #define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z
 
 // Feedrate (mm/m) for the "accurate" probe of each point
-#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 2)
+#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 4)
 
 /**
  * Multiple Probing
@@ -1319,7 +1335,7 @@
 #endif
 
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_XY (50*60)
+#define HOMING_FEEDRATE_XY (90*60)
 #define HOMING_FEEDRATE_Z  (12*60)
 
 // Validate that endstops are triggered on homing moves
@@ -1520,8 +1536,11 @@
   // Middle point of circle
   #define NOZZLE_CLEAN_CIRCLE_MIDDLE NOZZLE_CLEAN_START_POINT
 
-  // Moves the nozzle to the initial position
+  // Move the nozzle to the initial position after cleaning
   #define NOZZLE_CLEAN_GOBACK
+
+  // Enable for a purge/clean station that's always at the gantry height (thus no Z move)
+  //#define NOZZLE_CLEAN_NO_Z
 #endif
 
 /**
@@ -1678,6 +1697,14 @@
 //  If CLOCKWISE normally moves UP this makes it go DOWN.
 //
 #define REVERSE_MENU_DIRECTION
+
+//
+// This option reverses the encoder direction for Select Screen.
+//
+//  If CLOCKWISE normally moves LEFT this makes it go RIGHT.
+//  If CLOCKWISE normally moves RIGHT this makes it go LEFT.
+//
+//#define REVERSE_SELECT_DIRECTION
 
 //
 // Individual Axis Homing
@@ -1994,6 +2021,11 @@
 //
 //#define U8GLIB_SH1106_EINSTART
 
+//
+// Overlord OLED display/controller with i2c buzzer and LEDs
+//
+//#define OVERLORD_OLED
+
 //=============================================================================
 //========================== Extensible UI Displays ===========================
 //=============================================================================
@@ -2019,18 +2051,26 @@
 //=============================================================================
 
 //
-// MKS Robin 320x240 color display
-// Also used for JGAurora A5S & A1 TFT LCD's (16-bit Parallel LCD via FSMC)
-#define MKS_ROBIN_TFT
-#define PRINTER_EVENT_LEDS
+// FSMC display (MKS Robin, Alfawise U20, JGAurora A5S, A1, etc.)
+//
+#define FSMC_GRAPHICAL_TFT
+//#define PRINTER_EVENT_LEDS
 
 //=============================================================================
 //============================  Other Controllers  ============================
 //=============================================================================
 
 //
-// CONTROLLER TYPE: Keypad / Add-on
+// ADS7843/XPT2046 ADC Touchscreen such as ILI9341 2.8
 //
+#define TOUCH_BUTTONS
+#if ENABLED(TOUCH_BUTTONS)
+  #define XPT2046_X_CALIBRATION   12316
+  #define XPT2046_Y_CALIBRATION  -8981
+  #define XPT2046_X_OFFSET       -43
+  #define XPT2046_Y_OFFSET        257
+  #define XPT2046_Z1_THRESHOLD 1
+#endif
 
 //
 // RepRapWorld REPRAPWORLD_KEYPAD v1.1
@@ -2126,8 +2166,10 @@
 //#define NEOPIXEL_LED
 #if ENABLED(NEOPIXEL_LED)
   #define NEOPIXEL_TYPE   NEO_GRBW // NEO_GRBW / NEO_GRB - four/three channel driver type (defined in Adafruit_NeoPixel.h)
-  #define NEOPIXEL_PIN    4        // LED driving pin
-  #define NEOPIXEL_PIXELS 30       // Number of LEDs in the strip
+  #define NEOPIXEL_PIN     4       // LED driving pin
+  //#define NEOPIXEL2_TYPE NEOPIXEL_TYPE
+  //#define NEOPIXEL2_PIN    5
+  #define NEOPIXEL_PIXELS 30       // Number of LEDs in the strip, larger of 2 strips if 2 neopixel strips are used
   #define NEOPIXEL_IS_SEQUENTIAL   // Sequential display for temperature change - LED by LED. Disable to change all LEDs at once.
   #define NEOPIXEL_BRIGHTNESS 127  // Initial brightness (0-255)
   //#define NEOPIXEL_STARTUP_TEST  // Cycle through colors at startup

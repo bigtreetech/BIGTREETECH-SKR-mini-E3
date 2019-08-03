@@ -30,6 +30,10 @@
 
 #include "../../feature/bedlevel/bedlevel.h"
 
+#if HAS_SPI_LCD
+  #include "../../lcd/ultralcd.h"
+#endif
+
 #if HAS_LEVELING
   #include "../../module/planner.h"
 #endif
@@ -163,8 +167,8 @@ void GcodeSuite::M48() {
           Y_current = Y_probe_location - (Y_PROBE_OFFSET_FROM_EXTRUDER) + sin(RADIANS(angle)) * radius;
 
           #if DISABLED(DELTA)
-            X_current = constrain(X_current, X_MIN_POS, X_MAX_POS);
-            Y_current = constrain(Y_current, Y_MIN_POS, Y_MAX_POS);
+            LIMIT(X_current, X_MIN_POS, X_MAX_POS);
+            LIMIT(Y_current, Y_MIN_POS, Y_MAX_POS);
           #else
             // If we have gone out too far, we can do a simple fix and scale the numbers
             // back in closer to the origin.
@@ -246,6 +250,13 @@ void GcodeSuite::M48() {
 
     SERIAL_ECHOLNPAIR_F("Standard Deviation: ", sigma, 6);
     SERIAL_EOL();
+
+    #if HAS_SPI_LCD
+      // Display M48 results in the status bar
+      char sigma_str[8];
+      dtostrf(sigma, 2, 6, sigma_str);
+      ui.status_printf_P(0, PSTR(MSG_M48_DEVIATION ": %s"), sigma_str);
+    #endif
   }
 
   clean_up_after_endstop_or_probe_move();

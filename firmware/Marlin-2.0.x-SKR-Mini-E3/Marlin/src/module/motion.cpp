@@ -51,7 +51,7 @@
   #include "../feature/bltouch.h"
 #endif
 
-#if EITHER(ULTRA_LCD, EXTENSIBLE_UI)
+#if HAS_DISPLAY
   #include "../lcd/ultralcd.h"
 #endif
 
@@ -423,6 +423,9 @@ void do_blocking_move_to(const float rx, const float ry, const float rz, const f
 void do_blocking_move_to_x(const float &rx, const float &fr_mm_s/*=0.0*/) {
   do_blocking_move_to(rx, current_position[Y_AXIS], current_position[Z_AXIS], fr_mm_s);
 }
+void do_blocking_move_to_y(const float &ry, const float &fr_mm_s/*=0.0*/) {
+  do_blocking_move_to(current_position[Y_AXIS], ry, current_position[Z_AXIS], fr_mm_s);
+}
 void do_blocking_move_to_z(const float &rz, const float &fr_mm_s/*=0.0*/) {
   do_blocking_move_to(current_position[X_AXIS], current_position[Y_AXIS], rz, fr_mm_s);
 }
@@ -538,10 +541,8 @@ void clean_up_after_endstop_or_probe_move() {
 
     #endif
 
-  #if ENABLED(DEBUG_LEVELING_FEATURE)
-    if (DEBUGGING(LEVELING))
-      SERIAL_ECHOLNPAIR("Axis ", axis_codes[axis], " min:", soft_endstop[axis].min, " max:", soft_endstop[axis].max);
-  #endif
+  if (DEBUGGING(LEVELING))
+    SERIAL_ECHOLNPAIR("Axis ", axis_codes[axis], " min:", soft_endstop[axis].min, " max:", soft_endstop[axis].max);
 }
 
   /**
@@ -1044,7 +1045,7 @@ bool axis_unhomed_error(const bool x/*=true*/, const bool y/*=true*/, const bool
     if (zz) SERIAL_CHAR('Z');
     SERIAL_ECHOLNPGM(" " MSG_FIRST);
 
-    #if EITHER(ULTRA_LCD, EXTENSIBLE_UI)
+    #if HAS_DISPLAY
       ui.status_printf_P(0, PSTR(MSG_HOME " %s%s%s " MSG_FIRST), xx ? MSG_X : "", yy ? MSG_Y : "", zz ? MSG_Z : "");
     #endif
     return true;
@@ -1073,7 +1074,7 @@ float get_homing_bump_feedrate(const AxisEnum axis) {
    * Set sensorless homing if the axis has it, accounting for Core Kinematics.
    */
   sensorless_t start_sensorless_homing_per_axis(const AxisEnum axis) {
-    sensorless_t stealth_states { false, false, false, false, false, false, false };
+    sensorless_t stealth_states { false };
 
     switch (axis) {
       default: break;
@@ -1599,6 +1600,21 @@ void homeaxis(const AxisEnum axis) {
   // Put away the Z probe
   #if HOMING_Z_WITH_PROBE
     if (axis == Z_AXIS && STOW_PROBE()) return;
+  #endif
+
+  #ifdef HOMING_BACKOFF_MM
+    constexpr float endstop_backoff[XYZ] = HOMING_BACKOFF_MM;
+    const float backoff_mm = endstop_backoff[
+      #if ENABLED(DELTA)
+        Z_AXIS
+      #else
+        axis
+      #endif
+    ];
+    if (backoff_mm) {
+      current_position[axis] -= ABS(backoff_mm) * axis_home_dir;
+      line_to_current_position();
+    }
   #endif
 
   // Clear retracted status if homing the Z axis

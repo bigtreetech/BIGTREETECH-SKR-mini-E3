@@ -98,13 +98,13 @@ const PinName digitalPin[] = {
 }
 #endif
 
-// ----------------------------------------------------------------------------
+// ------------------------
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/**
+ /**
   * @brief  System Clock Configuration
   * @param  None
   * @retval None

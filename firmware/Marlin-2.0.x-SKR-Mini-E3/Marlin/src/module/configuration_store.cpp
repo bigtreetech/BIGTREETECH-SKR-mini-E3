@@ -37,7 +37,7 @@
  */
 
 // Change EEPROM version if the structure changes
-#define EEPROM_VERSION "V67"
+#define EEPROM_VERSION "V68"
 #define EEPROM_OFFSET 100
 
 // Check the integrity of data offsets.
@@ -98,10 +98,8 @@
   #include "../feature/runout.h"
 #endif
 
-#include "../lcd/extensible_ui/ui_api.h"
-
 #if ENABLED(EXTRA_LIN_ADVANCE_K)
-extern float saved_extruder_advance_K[EXTRUDERS];
+  extern float saved_extruder_advance_K[EXTRUDERS];
 #endif
 
 #if EXTRUDERS > 1
@@ -462,7 +460,8 @@ void MarlinSettings::postprocess() {
     #define EEPROM_SKIP(VAR) (eeprom_index += sizeof(VAR))
   #endif
 
-  #define EEPROM_START()          int eeprom_index = EEPROM_OFFSET; persistentStore.access_start()
+  #define EEPROM_START()          if (!persistentStore.access_start()) { SERIAL_ECHO_MSG("No EEPROM."); return false; } \
+                                  int eeprom_index = EEPROM_OFFSET
   #define EEPROM_FINISH()         persistentStore.access_finish()
   #define EEPROM_WRITE(VAR)       do{ persistentStore.write_data(eeprom_index, (uint8_t*)&VAR, sizeof(VAR), &working_crc);              UPDATE_TEST_INDEX(VAR); }while(0)
   #define EEPROM_READ(VAR)        do{ persistentStore.read_data(eeprom_index, (uint8_t*)&VAR, sizeof(VAR), &working_crc, !validating);  UPDATE_TEST_INDEX(VAR); }while(0)
@@ -576,7 +575,7 @@ void MarlinSettings::postprocess() {
       #if HAS_FILAMENT_SENSOR
         const bool &runout_sensor_enabled = runout.enabled;
       #else
-        const bool runout_sensor_enabled = false;
+        const bool runout_sensor_enabled = true;
       #endif
       #if HAS_FILAMENT_SENSOR && defined(FILAMENT_RUNOUT_DISTANCE_MM)
         const float &runout_distance_mm = runout.runout_distance();
@@ -1390,7 +1389,7 @@ void MarlinSettings::postprocess() {
         float runout_distance_mm;
         EEPROM_READ(runout_distance_mm);
         #if HAS_FILAMENT_SENSOR && defined(FILAMENT_RUNOUT_DISTANCE_MM)
-          runout.set_runout_distance(runout_distance_mm);
+          if (!validating) runout.set_runout_distance(runout_distance_mm);
         #endif
       }
 
@@ -2030,8 +2029,7 @@ void MarlinSettings::postprocess() {
           const char extui_data[ExtUI::eeprom_data_size] = { 0 };
           _FIELD_TEST(extui_data);
           EEPROM_READ(extui_data);
-          if(!validating)
-            ExtUI::onLoadSettings(extui_data);
+          if (!validating) ExtUI::onLoadSettings(extui_data);
         }
       #endif
 
@@ -2114,7 +2112,7 @@ void MarlinSettings::postprocess() {
       (void)save();
       SERIAL_ECHO_MSG("EEPROM Initialized");
     #endif
-    return true;
+    return false;
   }
 
   #if ENABLED(AUTO_BED_LEVELING_UBL)
@@ -2252,7 +2250,7 @@ void MarlinSettings::reset() {
     planner.max_jerk[X_AXIS] = DEFAULT_XJERK;
     planner.max_jerk[Y_AXIS] = DEFAULT_YJERK;
     planner.max_jerk[Z_AXIS] = DEFAULT_ZJERK;
-    #if DISABLED(JUNCTION_DEVIATION) || DISABLED(LIN_ADVANCE)
+    #if !BOTH(JUNCTION_DEVIATION, LIN_ADVANCE)
       planner.max_jerk[E_AXIS] = DEFAULT_EJERK;
     #endif
   #endif
@@ -2290,6 +2288,7 @@ void MarlinSettings::reset() {
   #if EXTRUDERS > 1
     #if ENABLED(TOOLCHANGE_FILAMENT_SWAP)
       toolchange_settings.swap_length = TOOLCHANGE_FIL_SWAP_LENGTH;
+      toolchange_settings.extra_prime = TOOLCHANGE_FIL_EXTRA_PRIME;
       toolchange_settings.prime_speed = TOOLCHANGE_FIL_SWAP_PRIME_SPEED;
       toolchange_settings.retract_speed = TOOLCHANGE_FIL_SWAP_RETRACT_SPEED;
     #endif
@@ -2767,7 +2766,7 @@ void MarlinSettings::reset() {
       #endif
       #if HAS_CLASSIC_JERK
         SERIAL_ECHOPGM(" X<max_x_jerk> Y<max_y_jerk> Z<max_z_jerk>");
-        #if DISABLED(JUNCTION_DEVIATION) || DISABLED(LIN_ADVANCE)
+        #if !BOTH(JUNCTION_DEVIATION, LIN_ADVANCE)
           SERIAL_ECHOPGM(" E<max_e_jerk>");
         #endif
       #endif
@@ -2785,7 +2784,7 @@ void MarlinSettings::reset() {
         , " X", LINEAR_UNIT(planner.max_jerk[X_AXIS])
         , " Y", LINEAR_UNIT(planner.max_jerk[Y_AXIS])
         , " Z", LINEAR_UNIT(planner.max_jerk[Z_AXIS])
-        #if DISABLED(JUNCTION_DEVIATION) || DISABLED(LIN_ADVANCE)
+        #if !BOTH(JUNCTION_DEVIATION, LIN_ADVANCE)
           , " E", LINEAR_UNIT(planner.max_jerk[E_AXIS])
         #endif
       #endif
