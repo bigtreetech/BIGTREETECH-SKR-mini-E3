@@ -1,0 +1,15 @@
+Stm32f103xx external SD card storage area simulates EEPROM to store data
+
+Open them in Configuration.h:
+
+# define EEPROM_SETTINGS
+
+# define EEPROM_CHITCHAT
+
+# define EEPROM_AUTO_INIT
+
+Then create an empty file "eeprom.dat" in onboard sd card
+
+The 4K default size is used to simulate eeprom data storage, 
+as long as the SD card capacity is large enough to set as much as you want,
+the capacity can be edited in Marlin 2.0
