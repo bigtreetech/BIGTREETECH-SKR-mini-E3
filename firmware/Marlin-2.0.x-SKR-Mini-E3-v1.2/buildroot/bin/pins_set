@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+IFS='/' read -r -a PINPATH <<< "$1"
+DIR=${PINPATH[0]}
+NAM=${PINPATH[1]}
+PIN=$2
+VAL=$3
+
+SED=$(which gsed || which sed)
+eval "${SED} -E -i 's/(\/\/)?(#define +${PIN}\b).*$/\2 ${VAL}/g' Marlin/src/pins/$DIR/pins_${NAM}.h"

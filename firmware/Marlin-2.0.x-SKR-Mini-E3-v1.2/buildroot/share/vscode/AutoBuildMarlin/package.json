@@ -1,0 +1,109 @@
+{
+  "name": "auto-build",
+  "displayName": "Auto Build Marlin",
+  "description": "Auto Build Marlin for VS code",
+  "version": "2.0.0",
+  "publisher": "marlinfirmware",
+  "icon": "logo.svg",
+  "engines": {
+    "vscode": "^1.23.0"
+  },
+  "enableProposedApi": true,
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:piobuild",
+    "onCommand:pioclean",
+    "onCommand:pioupload",
+    "onCommand:piotraceback"
+  ],
+  "main": "./extension",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "auto-build",
+          "title": "Auto Build Marlin",
+          "icon": "resources/AB.svg"
+        }
+      ]
+    },
+    "views": {
+      "auto-build": [
+        {
+          "id": "autobuild",
+          "name": " "
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "piobuild",
+        "title": "PIO Build",
+        "icon": {
+          "light": "resources/B48x48_light.svg",
+          "dark": "resources/B48x48_dark.svg"
+        }
+      },
+      {
+        "command": "pioclean",
+        "title": "PIO Clean",
+        "icon": {
+          "light": "resources/C48x48_light.svg",
+          "dark": "resources/C48x48_dark.svg"
+        }
+      },
+      {
+        "command": "pioupload",
+        "title": "PIO Upload",
+        "icon": {
+          "light": "resources/U48x48_light.svg",
+          "dark": "resources/U48x48_dark.svg"
+        }
+      },
+      {
+        "command": "piotraceback",
+        "title": "PIO Upload (traceback)",
+        "icon": {
+          "light": "resources/T48x48_light.svg",
+          "dark": "resources/T48x48_dark.svg"
+        }
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "piobuild",
+          "group": "navigation@1"
+        },
+        {
+          "command": "pioclean",
+          "group": "navigation@2"
+        },
+        {
+          "command": "pioupload",
+          "group": "navigation@3"
+        },
+        {
+          "command": "piotraceback",
+          "group": "navigation@4"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "vscode": "^1.1.17",
+    "typescript": "^2.6.1",
+    "tslint": "^5.8.0",
+    "@types/node": "^7.0.43",
+    "@types/mocha": "^2.2.42"
+  }
+}
