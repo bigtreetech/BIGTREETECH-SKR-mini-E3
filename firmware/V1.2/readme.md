@@ -5,8 +5,8 @@
 which is the PlatformIO plugin, and then click "Open Project" to open the project.![image](https://user-images.githubusercontent.com/25599056/60634053-0aee5d80-9e40-11e9-9658-7cac8b6d1002.png)
 ### If you are using the official Marlin 2.0 version, you need the following additional changes
 * After opening the project, go to the platformio.ini file and change the default environment from megaatmega2560 to STM32F103RC_bigtree, `env_default = STM32F103RC_bigtree`
-comment out `TMCStepper@>=0.5.0,<1.0.0` add `https://github.com/bigtreetech/TMCStepper` (Because of the 'write only' function still exists in the official TMC library file, the feedback of TMC2209 cannot be read normally when RX_PIN = TX_PIN)
-comment out `Adafruit NeoPixel@1.2.5` add `https://github.com/bigtreetech/Adafruit_NeoPixel` (Because of official library files do not support smt32f1 maple Libraries)
+* comment out `TMCStepper@>=0.5.0,<1.0.0` add `https://github.com/bigtreetech/TMCStepper` (Because of the 'write only' function still exists in the official TMC library file, the feedback of TMC2209 cannot be read normally when RX_PIN = TX_PIN)
+* comment out `Adafruit NeoPixel@1.2.5` add `https://github.com/bigtreetech/Adafruit_NeoPixel` (Because of official library files do not support smt32f1 maple Libraries)
 ![image](https://user-images.githubusercontent.com/25599056/66630670-4a92c580-ec37-11e9-9c40-2d9f095ce4af.png)
 * add `-DHAVE_SW_SERIAL` in build_flags
 ![image](https://user-images.githubusercontent.com/25599056/66633694-fd662200-ec3d-11e9-9569-4c27f1123dc6.png)
@@ -31,5 +31,7 @@ comment out `Adafruit NeoPixel@1.2.5` add `https://github.com/bigtreetech/Adafru
 ![image](https://user-images.githubusercontent.com/25599056/61014965-6e3a3b80-a3bc-11e9-8035-6463a2757cd7.png)
 * if you enable BLTOUCH, please enable `#define ENDSTOP_INTERRUPTS_FEATURE` too, this is because of that the feedback signal of bltouch   is a short pulse rather than a continuous high level, Interruption is required to ensure that 100% of the signal is captured.
 ![image](https://user-images.githubusercontent.com/25599056/63660618-bfc24c80-c7e9-11e9-9d81-6b8ce55b1f07.png)
+* add compatibility of `TARGET_STM32F1` and `ENDSTOP_INTERRUPTS_FEATURE`
+![image](https://user-images.githubusercontent.com/25599056/66634357-79ad3500-ec3f-11e9-8479-2ca8185400e2.png)
 * After the modification is complete, press Ctrl+Alt+B, and platformio will automatically download the compiled component and compile it. After the compilation is successful, a firmware.bin file will be generated in the .pio\build\STM32F103RC_bigtree directory. We will copy this file to the TF card of the motherboard, and then reset the motherboard, so that the firmware is burned into the motherboard, the red led D10 will always blink in the burning, After the burning is completed, D10 stop blink, and the file name in the TF card will change from 'firmware.bin' to 'FIRMWARE.CUR'
 
