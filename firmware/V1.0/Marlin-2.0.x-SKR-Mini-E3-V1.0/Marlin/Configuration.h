@@ -2087,7 +2087,11 @@
 // Use software PWM to drive the fan, as for the heaters. This uses a very low frequency
 // which is not as annoying as with the hardware PWM. On the other hand, if this frequency
 // is too low, you should also increment SOFT_PWM_SCALE.
+<<<<<<< HEAD
 #define FAN_SOFT_PWM
+=======
+//#define FAN_SOFT_PWM
+>>>>>>> 758f52e85bdfbfc17a270da347f659b57f4451df
 
 // Incrementing this by 1 will double the software PWM frequency,
 // affecting heaters, and the fan if FAN_SOFT_PWM is enabled.
