@@ -21,7 +21,7 @@ which is the PlatformIO plugin, and then click "Open Project" to open the projec
 `#define BAUDRATE 115200`
 
 `#define MOTHERBOARD BOARD_BTT_SKR_MINI_E3_V1_2`
-![image](https://user-images.githubusercontent.com/25599056/66630522-0c95a180-ec37-11e9-9560-3c2b729b3310.png)
+ ![image](https://user-images.githubusercontent.com/25599056/66630522-0c95a180-ec37-11e9-9560-3c2b729b3310.png)
 * modify X/Y/Z/E0 step motor driver type to `TMC2209`
 ![image](https://user-images.githubusercontent.com/25599056/60634508-b0560100-9e41-11e9-9a3a-2fc217564a15.png)
 * this board support `CR10_STOCKDISPLAY` 
@@ -29,9 +29,8 @@ which is the PlatformIO plugin, and then click "Open Project" to open the projec
 * NEED NOT modify the TMC2209 slave address, default 0 is ok!
 * comment out `//#define SPEAKER`, if you don't comment out this, it will freeze when you pressed button
 ![image](https://user-images.githubusercontent.com/25599056/61014965-6e3a3b80-a3bc-11e9-8035-6463a2757cd7.png)
-* if you enable BLTOUCH, please enable `#define ENDSTOP_INTERRUPTS_FEATURE` too, this is because of that the feedback signal of bltouch   is a short pulse rather than a continuous high level, Interruption is required to ensure that 100% of the signal is captured.
-![image](https://user-images.githubusercontent.com/25599056/63660618-bfc24c80-c7e9-11e9-9d81-6b8ce55b1f07.png)
-* add compatibility of `TARGET_STM32F1` and `ENDSTOP_INTERRUPTS_FEATURE`
-![image](https://user-images.githubusercontent.com/25599056/66634357-79ad3500-ec3f-11e9-8479-2ca8185400e2.png)
+* if you enable BLTOUCH, please enable `#define FAN_SOFT_PWM` too, if not the fan will modify servo control signal duty cycle
+
+ ![image](https://user-images.githubusercontent.com/25599056/66694083-95b5e280-ece2-11e9-819b-e2ae3a710a83.png)
 * After the modification is complete, press Ctrl+Alt+B, and platformio will automatically download the compiled component and compile it. After the compilation is successful, a firmware.bin file will be generated in the .pio\build\STM32F103RC_bigtree directory. We will copy this file to the TF card of the motherboard, and then reset the motherboard, so that the firmware is burned into the motherboard, the red led D10 will always blink in the burning, After the burning is completed, D10 stop blink, and the file name in the TF card will change from 'firmware.bin' to 'FIRMWARE.CUR'
 
