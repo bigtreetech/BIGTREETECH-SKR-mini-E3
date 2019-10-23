@@ -10,6 +10,8 @@ which is the PlatformIO plugin, and then click "Open Project" to open the projec
 ![image](https://user-images.githubusercontent.com/25599056/66630670-4a92c580-ec37-11e9-9c40-2d9f095ce4af.png)
 * add `-DHAVE_SW_SERIAL` in build_flags
 ![image](https://user-images.githubusercontent.com/25599056/66633694-fd662200-ec3d-11e9-9569-4c27f1123dc6.png)
+* delete `Adafruit NeoPixel, ` in lib_ignore
+![image](https://user-images.githubusercontent.com/25599056/67383650-22ee1680-f5c2-11e9-9009-8c6dc6308cf3.png)
 
 * In the repo you just cloned, copy the contents of config\examples\Creality\Ender-3\ to Marlin
 * Then go to the Configuration.h file and modify it:
