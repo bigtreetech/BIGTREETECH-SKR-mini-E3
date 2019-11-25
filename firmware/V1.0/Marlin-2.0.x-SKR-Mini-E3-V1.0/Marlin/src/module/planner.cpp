@@ -96,8 +96,16 @@
   #include "../feature/backlash.h"
 #endif
 
+#if ENABLED(CANCEL_OBJECTS)
+  #include "../feature/cancel_object.h"
+#endif
+
 #if ENABLED(POWER_LOSS_RECOVERY)
   #include "../feature/power_loss_recovery.h"
+#endif
+
+#if HAS_CUTTER
+  #include "../feature/spindle_laser.h"
 #endif
 
 // Delay for delivery of first block to the stepper ISR, if the queue contains 2 or
@@ -1220,6 +1228,11 @@ void Planner::check_axes_activity() {
     #endif
   }
   else {
+
+    #if HAS_CUTTER
+      cutter.refresh();
+    #endif
+
     #if FAN_COUNT > 0
       FANS_LOOP(i)
         tail_fan_speed[i] = thermalManager.scaledFanSpeed(i);
@@ -1235,6 +1248,9 @@ void Planner::check_axes_activity() {
     #endif
   }
 
+  //
+  // Disable inactive axes
+  //
   #if ENABLED(DISABLE_X)
     if (!axis_active.x) disable_X();
   #endif
@@ -1248,6 +1264,9 @@ void Planner::check_axes_activity() {
     if (!axis_active.e) disable_e_steppers();
   #endif
 
+  //
+  // Update Fan speeds
+  //
   #if FAN_COUNT > 0
 
     #if FAN_KICKSTART_TIME > 0
@@ -1266,9 +1285,9 @@ void Planner::check_axes_activity() {
     #endif
 
     #if FAN_MIN_PWM != 0 || FAN_MAX_PWM != 255
-      #define CALC_FAN_SPEED(f) (tail_fan_speed[f] ? map(tail_fan_speed[f], 1, 255, FAN_MIN_PWM, FAN_MAX_PWM) : 0)
+      #define CALC_FAN_SPEED(f) (tail_fan_speed[f] ? map(tail_fan_speed[f], 1, 255, FAN_MIN_PWM, FAN_MAX_PWM) : FAN_OFF_PWM)
     #else
-      #define CALC_FAN_SPEED(f) tail_fan_speed[f]
+      #define CALC_FAN_SPEED(f) (tail_fan_speed[f] ?: FAN_OFF_PWM)
     #endif
 
     #if ENABLED(FAN_SOFT_PWM)
@@ -1791,6 +1810,10 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
     delta_mm.e = esteps_float * steps_to_mm[E_AXIS_N(extruder)];
   #endif
 
+  #if ENABLED(LCD_SHOW_E_TOTAL)
+    e_move_accumulator += delta_mm.e;
+  #endif
+
   if (block->steps.a < MIN_STEPS_PER_SEGMENT && block->steps.b < MIN_STEPS_PER_SEGMENT && block->steps.c < MIN_STEPS_PER_SEGMENT) {
     block->millimeters = (0
       #if EXTRUDERS
@@ -1839,6 +1862,10 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
 
   #if ENABLED(MIXING_EXTRUDER)
     MIXER_POPULATE_BLOCK();
+  #endif
+
+  #if HAS_CUTTER
+    block->cutter_power = cutter.power;
   #endif
 
   #if FAN_COUNT > 0
@@ -1897,121 +1924,32 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
 
       #if ENABLED(DISABLE_INACTIVE_EXTRUDER) // Enable only the selected extruder
 
-        #define DISABLE_IDLE_E(N) if (!g_uc_extruder_last_move[N]) disable_E##N();
-
         for (uint8_t i = 0; i < EXTRUDERS; i++)
           if (g_uc_extruder_last_move[i] > 0) g_uc_extruder_last_move[i]--;
 
-        switch (extruder) {
-          case 0:
-            #if EXTRUDERS > 1
-              DISABLE_IDLE_E(1);
-              #if EXTRUDERS > 2
-                DISABLE_IDLE_E(2);
-                #if EXTRUDERS > 3
-                  DISABLE_IDLE_E(3);
-                  #if EXTRUDERS > 4
-                    DISABLE_IDLE_E(4);
-                    #if EXTRUDERS > 5
-                      DISABLE_IDLE_E(5);
-                    #endif // EXTRUDERS > 5
-                  #endif // EXTRUDERS > 4
-                #endif // EXTRUDERS > 3
-              #endif // EXTRUDERS > 2
-            #endif // EXTRUDERS > 1
-            enable_E0();
-            g_uc_extruder_last_move[0] = (BLOCK_BUFFER_SIZE) * 2;
-            #if HAS_DUPLICATION_MODE
-              if (extruder_duplication_enabled) {
-                enable_E1();
-                g_uc_extruder_last_move[1] = (BLOCK_BUFFER_SIZE) * 2;
-              }
-            #endif
-          break;
-          #if EXTRUDERS > 1
-            case 1:
-              DISABLE_IDLE_E(0);
-              #if EXTRUDERS > 2
-                DISABLE_IDLE_E(2);
-                #if EXTRUDERS > 3
-                  DISABLE_IDLE_E(3);
-                  #if EXTRUDERS > 4
-                    DISABLE_IDLE_E(4);
-                    #if EXTRUDERS > 5
-                      DISABLE_IDLE_E(5);
-                    #endif // EXTRUDERS > 5
-                  #endif // EXTRUDERS > 4
-                #endif // EXTRUDERS > 3
-              #endif // EXTRUDERS > 2
-              enable_E1();
-              g_uc_extruder_last_move[1] = (BLOCK_BUFFER_SIZE) * 2;
-            break;
-            #if EXTRUDERS > 2
-              case 2:
-                DISABLE_IDLE_E(0);
-                DISABLE_IDLE_E(1);
-                #if EXTRUDERS > 3
-                  DISABLE_IDLE_E(3);
-                  #if EXTRUDERS > 4
-                    DISABLE_IDLE_E(4);
-                    #if EXTRUDERS > 5
-                      DISABLE_IDLE_E(5);
-                    #endif
-                  #endif
-                #endif
-                enable_E2();
-                g_uc_extruder_last_move[2] = (BLOCK_BUFFER_SIZE) * 2;
-              break;
-              #if EXTRUDERS > 3
-                case 3:
-                  DISABLE_IDLE_E(0);
-                  DISABLE_IDLE_E(1);
-                  DISABLE_IDLE_E(2);
-                  #if EXTRUDERS > 4
-                    DISABLE_IDLE_E(4);
-                    #if EXTRUDERS > 5
-                      DISABLE_IDLE_E(5);
-                    #endif
-                  #endif
-                  enable_E3();
-                  g_uc_extruder_last_move[3] = (BLOCK_BUFFER_SIZE) * 2;
-                break;
-                #if EXTRUDERS > 4
-                  case 4:
-                    DISABLE_IDLE_E(0);
-                    DISABLE_IDLE_E(1);
-                    DISABLE_IDLE_E(2);
-                    DISABLE_IDLE_E(3);
-                    #if EXTRUDERS > 5
-                      DISABLE_IDLE_E(5);
-                    #endif
-                    enable_E4();
-                    g_uc_extruder_last_move[4] = (BLOCK_BUFFER_SIZE) * 2;
-                  break;
-                  #if EXTRUDERS > 5
-                    case 5:
-                      DISABLE_IDLE_E(0);
-                      DISABLE_IDLE_E(1);
-                      DISABLE_IDLE_E(2);
-                      DISABLE_IDLE_E(3);
-                      DISABLE_IDLE_E(4);
-                      enable_E5();
-                      g_uc_extruder_last_move[5] = (BLOCK_BUFFER_SIZE) * 2;
-                    break;
-                  #endif // EXTRUDERS > 5
-                #endif // EXTRUDERS > 4
-              #endif // EXTRUDERS > 3
-            #endif // EXTRUDERS > 2
-          #endif // EXTRUDERS > 1
-        }
+        #if HAS_DUPLICATION_MODE
+          if (extruder_duplication_enabled && extruder == 0) {
+            enable_E1();
+            g_uc_extruder_last_move[1] = (BLOCK_BUFFER_SIZE) * 2;
+          }
+        #endif
+
+        #define ENABLE_ONE_E(N) do{ \
+          if (extruder == N) { \
+            enable_E##N(); \
+            g_uc_extruder_last_move[N] = (BLOCK_BUFFER_SIZE) * 2; \
+          } \
+          else if (!g_uc_extruder_last_move[N]) \
+            disable_E##N(); \
+        }while(0);
+
       #else
-        enable_E0();
-        enable_E1();
-        enable_E2();
-        enable_E3();
-        enable_E4();
-        enable_E5();
+
+        #define ENABLE_ONE_E(N) enable_E##N();
+
       #endif
+
+      REPEAT(EXTRUDERS, ENABLE_ONE_E);
     }
   #endif // EXTRUDERS
 
@@ -2354,13 +2292,21 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
 
   #endif
 
+  #ifdef USE_CACHED_SQRT
+    #define CACHED_SQRT(N, V) \
+      static float saved_V, N; \
+      if (V != saved_V) { N = SQRT(V); saved_V = V; }
+  #else
+    #define CACHED_SQRT(N, V) const float N = SQRT(V)
+  #endif
+
   #if HAS_CLASSIC_JERK
 
     /**
      * Adapted from Průša MKS firmware
      * https://github.com/prusa3d/Prusa-Firmware
      */
-    const float nominal_speed = SQRT(block->nominal_speed_sqr);
+    CACHED_SQRT(nominal_speed, block->nominal_speed_sqr);
 
     // Exit speed limited by a jerk to full halt of a previous last segment
     static float previous_safe_speed;
@@ -2401,7 +2347,8 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
 
       // The junction velocity will be shared between successive segments. Limit the junction velocity to their minimum.
       // Pick the smaller of the nominal speeds. Higher speed shall not be achieved at the junction during coasting.
-      const float previous_nominal_speed = SQRT(previous_nominal_speed_sqr);
+      CACHED_SQRT(previous_nominal_speed, previous_nominal_speed_sqr);
+
       vmax_junction = _MIN(nominal_speed, previous_nominal_speed);
 
       // Now limit the jerk in all axes.
@@ -2569,7 +2516,11 @@ bool Planner::buffer_segment(const float &a, const float &b, const float &c, con
   #endif
 
   // DRYRUN prevents E moves from taking place
-  if (DEBUGGING(DRYRUN)) {
+  if (DEBUGGING(DRYRUN)
+    #if ENABLED(CANCEL_OBJECTS)
+      || cancelable.skipping
+    #endif
+  ) {
     position.e = target.e;
     #if HAS_POSITION_FLOAT
       position_float.e = e;

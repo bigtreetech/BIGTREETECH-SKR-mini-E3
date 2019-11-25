@@ -51,6 +51,10 @@
   #include "../feature/mixing.h"
 #endif
 
+#if HAS_CUTTER
+  #include "../feature/spindle_laser.h"
+#endif
+
 // Feedrate for manual moves
 #ifdef MANUAL_FEEDRATE
   constexpr xyze_feedrate_t manual_feedrate_mm_m = MANUAL_FEEDRATE;
@@ -145,6 +149,10 @@ typedef struct block_t {
            final_rate,                      // The minimal rate at exit
            acceleration_steps_per_s2;       // acceleration steps/sec^2
 
+  #if HAS_CUTTER
+    cutter_power_t cutter_power;            // Power level for Spindle, Laser, etc.
+  #endif
+
   #if FAN_COUNT > 0
     uint8_t fan_speed[FAN_COUNT];
   #endif
@@ -163,7 +171,7 @@ typedef struct block_t {
 
 } block_t;
 
-#define HAS_POSITION_FLOAT ANY(LIN_ADVANCE, SCARA_FEEDRATE_SCALING, GRADIENT_MIX)
+#define HAS_POSITION_FLOAT ANY(LIN_ADVANCE, SCARA_FEEDRATE_SCALING, GRADIENT_MIX, LCD_SHOW_E_TOTAL)
 
 #define BLOCK_MOD(n) ((n)&(BLOCK_BUFFER_SIZE-1))
 

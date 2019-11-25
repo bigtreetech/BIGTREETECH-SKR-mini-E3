@@ -94,6 +94,10 @@
   #include "../../feature/runout.h"
 #endif
 
+#if ENABLED(CASE_LIGHT_ENABLE)
+  #include "../../feature/caselight.h"
+#endif
+
 #if ENABLED(BABYSTEPPING)
   #include "../../feature/babystep.h"
 #endif
@@ -263,36 +267,42 @@ namespace ExtUI {
     #endif
   }
 
+  #ifdef TOUCH_UI_LCD_TEMP_SCALING
+    #define GET_TEMP_ADJUSTMENT(A) float(A)/TOUCH_UI_LCD_TEMP_SCALING
+  #else
+    #define GET_TEMP_ADJUSTMENT(A) A
+  #endif
+
   float getActualTemp_celsius(const heater_t heater) {
     switch (heater) {
       #if HAS_HEATED_BED
-        case BED: return thermalManager.degBed();
+        case BED: return GET_TEMP_ADJUSTMENT(thermalManager.degBed());
       #endif
       #if HAS_HEATED_CHAMBER
-        case CHAMBER: return thermalManager.degChamber();
+        case CHAMBER: return GET_TEMP_ADJUSTMENT(thermalManager.degChamber());
       #endif
-      default: return thermalManager.degHotend(heater - H0);
+      default: return GET_TEMP_ADJUSTMENT(thermalManager.degHotend(heater - H0));
     }
   }
 
   float getActualTemp_celsius(const extruder_t extruder) {
-    return thermalManager.degHotend(extruder - E0);
+    return GET_TEMP_ADJUSTMENT(thermalManager.degHotend(extruder - E0));
   }
 
   float getTargetTemp_celsius(const heater_t heater) {
     switch (heater) {
       #if HAS_HEATED_BED
-        case BED: return thermalManager.degTargetBed();
+        case BED: return GET_TEMP_ADJUSTMENT(thermalManager.degTargetBed());
       #endif
       #if HAS_HEATED_CHAMBER
-        case CHAMBER: return thermalManager.degTargetChamber();
+        case CHAMBER: return GET_TEMP_ADJUSTMENT(thermalManager.degTargetChamber());
       #endif
-      default: return thermalManager.degTargetHotend(heater - H0);
+      default: return GET_TEMP_ADJUSTMENT(thermalManager.degTargetHotend(heater - H0));
     }
   }
 
   float getTargetTemp_celsius(const extruder_t extruder) {
-    return thermalManager.degTargetHotend(extruder - E0);
+    return GET_TEMP_ADJUSTMENT(thermalManager.degTargetHotend(extruder - E0));
   }
 
   float getTargetFan_percent(const fan_t fan) {
@@ -581,6 +591,7 @@ namespace ExtUI {
   }
 
   void setAxisMaxFeedrate_mm_s(const feedRate_t value, const extruder_t extruder) {
+    UNUSED_E(extruder);
     planner.set_max_feedrate(E_AXIS_N(extruder - E0), value);
   }
 
@@ -598,6 +609,7 @@ namespace ExtUI {
   }
 
   void setAxisMaxAcceleration_mm_s2(const float value, const extruder_t extruder) {
+    UNUSED_E(extruder);
     planner.set_max_acceleration(E_AXIS_N(extruder - E0), value);
   }
 
@@ -608,6 +620,22 @@ namespace ExtUI {
     #ifdef FILAMENT_RUNOUT_DISTANCE_MM
       float getFilamentRunoutDistance_mm()                 { return runout.runout_distance(); }
       void setFilamentRunoutDistance_mm(const float value) { runout.set_runout_distance(constrain(value, 0, 999)); }
+    #endif
+  #endif
+
+  #if HAS_CASE_LIGHT
+    bool getCaseLightState()                 { return case_light_on; }
+    void setCaseLightState(const bool value) {
+      case_light_on = value;
+      update_case_light();
+    }
+
+    #if DISABLED(CASE_LIGHT_NO_BRIGHTNESS)
+      float getCaseLightBrightness_percent()                 { return ui8_to_percent(case_light_brightness); }
+      void setCaseLightBrightness_percent(const float value) {
+         case_light_brightness = map(constrain(value, 0, 100), 0, 100, 0, 255);
+         update_case_light();
+      }
     #endif
   #endif
 
@@ -796,7 +824,7 @@ namespace ExtUI {
   #endif
 
   uint8_t getProgress_percent() {
-    return ui.get_progress();
+    return ui.get_progress_percent();
   }
 
   uint32_t getProgress_seconds_elapsed() {
@@ -863,27 +891,38 @@ namespace ExtUI {
   }
 
   void setTargetTemp_celsius(float value, const heater_t heater) {
+    #ifdef TOUCH_UI_LCD_TEMP_SCALING
+      value *= TOUCH_UI_LCD_TEMP_SCALING;
+    #endif
     enableHeater(heater);
+    #if HAS_HEATED_CHAMBER
+      if (heater == CHAMBER)
+        thermalManager.setTargetChamber(LROUND(constrain(value, 0, CHAMBER_MAXTEMP - 10)));
+      else
+    #endif
     #if HAS_HEATED_BED
       if (heater == BED)
-        thermalManager.setTargetBed(constrain(value, 0, BED_MAXTEMP - 10));
+        thermalManager.setTargetBed(LROUND(constrain(value, 0, BED_MAXTEMP - 10)));
       else
     #endif
       {
         #if HOTENDS
           static constexpr int16_t heater_maxtemp[HOTENDS] = ARRAY_BY_HOTENDS(HEATER_0_MAXTEMP, HEATER_1_MAXTEMP, HEATER_2_MAXTEMP, HEATER_3_MAXTEMP, HEATER_4_MAXTEMP, HEATER_5_MAXTEMP);
           const int16_t e = heater - H0;
-          thermalManager.setTargetHotend(constrain(value, 0, heater_maxtemp[e] - 15), e);
+          thermalManager.setTargetHotend(LROUND(constrain(value, 0, heater_maxtemp[e] - 15)), e);
         #endif
       }
   }
 
   void setTargetTemp_celsius(float value, const extruder_t extruder) {
+    #ifdef TOUCH_UI_LCD_TEMP_SCALING
+      value *= TOUCH_UI_LCD_TEMP_SCALING;
+    #endif
     #if HOTENDS
       constexpr int16_t heater_maxtemp[HOTENDS] = ARRAY_BY_HOTENDS(HEATER_0_MAXTEMP, HEATER_1_MAXTEMP, HEATER_2_MAXTEMP, HEATER_3_MAXTEMP, HEATER_4_MAXTEMP, HEATER_5_MAXTEMP);
       const int16_t e = extruder - E0;
       enableHeater(extruder);
-      thermalManager.setTargetHotend(constrain(value, 0, heater_maxtemp[e] - 15), e);
+      thermalManager.setTargetHotend(LROUND(constrain(value, 0, heater_maxtemp[e] - 15)), e);
     #endif
   }
 
@@ -908,6 +947,7 @@ namespace ExtUI {
   }
 
   void printFile(const char *filename) {
+    UNUSED(filename);
     IFSD(card.openAndPrintFile(filename), NOOP);
   }
 
@@ -961,6 +1001,8 @@ namespace ExtUI {
       card.getfilename_sorted(nr);
       return card.filename[0] != '\0';
     #else
+      UNUSED(pos);
+      UNUSED(skip_range_check);
       return false;
     #endif
   }
@@ -1004,6 +1046,8 @@ namespace ExtUI {
     #if ENABLED(SDSUPPORT)
       card.cd(dirname);
       num_files = 0xFFFF;
+    #else
+      UNUSED(dirname);
     #endif
   }
 
