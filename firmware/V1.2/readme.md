@@ -1,3 +1,14 @@
+### BL Touch pre-configured firmware
+Note: The filename must be renamed to "firmware.bin" before coping this file to the motherboard onboard TF card.
+
+firmware-bltouch.bin: used for normal connection
+
+![image](https://github.com/bigtreetech/BIGTREETECH-SKR-mini-E3/blob/master/hardware/BTT%20SKR%20MINI%20E3%20V1.2/BLTOUCH%20connection-1.png)
+
+firmware-bltouch-for-z-homing.bin: If you want use bltouch for z-homing, you can flash this firmware.
+
+![image](https://github.com/bigtreetech/BIGTREETECH-SKR-mini-E3/blob/master/hardware/BTT%20SKR%20MINI%20E3%20V1.2/BLTOUCH%20connection-2.png)
+### Firmware compilation guide
 1. Install the compilation environment, We recommend vscode + platformio. If you have already installed it, please skip this step.  If not, please see [here](https://github.com/bigtreetech/Document/blob/master/How%20to%20install%20VScode+Platformio.md).
 2. If you use the firmware of this repository, you just need to customize the function that you want and recompile it(Because Marlin 2.0 is in bugfix state, this repository may not be the latest version of Marlin 2.0).
 3. If you want to use the latest version of Marlin 2.0, please download from the [official GitHub website of marlin](https://github.com/MarlinFirmware/Marlin/tree/bugfix-2.0.x)
