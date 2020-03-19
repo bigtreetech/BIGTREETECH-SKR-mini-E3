@@ -1,6 +1,7 @@
 ### BL Touch pre-configured firmware
 Note: The filename must be renamed to "firmware.bin" before coping this file to the motherboard onboard TF card.
 
+firmware.bin: The original factory firmware, cannot support BL Touch
 firmware-bltouch.bin: used for normal connection
 
 ![image](https://github.com/bigtreetech/BIGTREETECH-SKR-mini-E3/blob/master/hardware/BTT%20SKR%20MINI%20E3%20V1.2/BLTOUCH%20connection-1.png)
