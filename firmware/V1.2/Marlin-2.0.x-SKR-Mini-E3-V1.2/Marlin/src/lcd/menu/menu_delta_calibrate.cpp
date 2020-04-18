@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -37,32 +37,38 @@
 #endif
 
 #if ENABLED(EXTENSIBLE_UI)
-  #include "../../lcd/extensible_ui/ui_api.h"
+  #include "../../lcd/extui/ui_api.h"
 #endif
 
 void _man_probe_pt(const xy_pos_t &xy) {
-  do_blocking_move_to_xy_z(xy, Z_CLEARANCE_BETWEEN_PROBES);
-  ui.synchronize();
-  move_menu_scale = _MAX(PROBE_MANUALLY_STEP, MIN_STEPS_PER_SEGMENT / float(DEFAULT_XYZ_STEPS_PER_UNIT));
-  ui.goto_screen(lcd_move_z);
+  if (!ui.wait_for_move) {
+    ui.wait_for_move = true;
+    do_blocking_move_to_xy_z(xy, Z_CLEARANCE_BETWEEN_PROBES);
+    ui.wait_for_move = false;
+    ui.synchronize();
+    move_menu_scale = _MAX(PROBE_MANUALLY_STEP, MIN_STEPS_PER_SEGMENT / float(DEFAULT_XYZ_STEPS_PER_UNIT));
+    ui.goto_screen(lcd_move_z);
+  }
 }
 
 #if ENABLED(DELTA_AUTO_CALIBRATION)
 
   #include "../../gcode/gcode.h"
 
+  #if ENABLED(HOST_PROMPT_SUPPORT)
+    #include "../../feature/host_actions.h" // for host_prompt_do
+  #endif
+
   float lcd_probe_pt(const xy_pos_t &xy) {
     _man_probe_pt(xy);
-    KEEPALIVE_STATE(PAUSED_FOR_USER);
     ui.defer_status_screen();
-    wait_for_user = true;
     #if ENABLED(HOST_PROMPT_SUPPORT)
-      host_prompt_do(PROMPT_USER_CONTINUE, PSTR("Delta Calibration in progress"), PSTR("Continue"));
+      host_prompt_do(PROMPT_USER_CONTINUE, PSTR("Delta Calibration in progress"), CONTINUE_STR);
     #endif
     #if ENABLED(EXTENSIBLE_UI)
       ExtUI::onUserConfirmRequired_P(PSTR("Delta Calibration in progress"));
     #endif
-    while (wait_for_user) idle();
+    wait_for_user_response();
     ui.goto_previous_screen_no_defer();
     return current_position.z;
   }
@@ -95,7 +101,7 @@ void _man_probe_pt(const xy_pos_t &xy) {
 #endif
 
 void lcd_delta_settings() {
-  auto _recalc_delta_settings = []() {
+  auto _recalc_delta_settings = []{
     #if HAS_LEVELING
       reset_bed_level(); // After changing kinematics bed-level data is no longer valid
     #endif
@@ -105,14 +111,14 @@ void lcd_delta_settings() {
   BACK_ITEM(MSG_DELTA_CALIBRATE);
   EDIT_ITEM(float52sign, MSG_DELTA_HEIGHT, &delta_height, delta_height - 10, delta_height + 10, _recalc_delta_settings);
   #define EDIT_ENDSTOP_ADJ(LABEL,N) EDIT_ITEM_P(float43, PSTR(LABEL), &delta_endstop_adj.N, -5, 5, _recalc_delta_settings)
-  EDIT_ENDSTOP_ADJ("Ex",a);
-  EDIT_ENDSTOP_ADJ("Ey",b);
-  EDIT_ENDSTOP_ADJ("Ez",c);
+  EDIT_ENDSTOP_ADJ("Ex", a);
+  EDIT_ENDSTOP_ADJ("Ey", b);
+  EDIT_ENDSTOP_ADJ("Ez", c);
   EDIT_ITEM(float52sign, MSG_DELTA_RADIUS, &delta_radius, delta_radius - 5, delta_radius + 5, _recalc_delta_settings);
   #define EDIT_ANGLE_TRIM(LABEL,N) EDIT_ITEM_P(float43, PSTR(LABEL), &delta_tower_angle_trim.N, -5, 5, _recalc_delta_settings)
-  EDIT_ANGLE_TRIM("Tx",a);
-  EDIT_ANGLE_TRIM("Ty",b);
-  EDIT_ANGLE_TRIM("Tz",c);
+  EDIT_ANGLE_TRIM("Tx", a);
+  EDIT_ANGLE_TRIM("Ty", b);
+  EDIT_ANGLE_TRIM("Tz", c);
   EDIT_ITEM(float52sign, MSG_DELTA_DIAG_ROD, &delta_diagonal_rod, delta_diagonal_rod - 5, delta_diagonal_rod + 5, _recalc_delta_settings);
   END_MENU();
 }

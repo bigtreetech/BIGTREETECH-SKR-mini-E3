@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -24,7 +24,7 @@
 
 #if HAS_LCD_MENU && ENABLED(MMU2_MENUS)
 
-#include "../../feature/prusa_MMU2/mmu2.h"
+#include "../../feature/mmu2/mmu2.h"
 #include "menu_mmu2.h"
 #include "menu.h"
 
@@ -54,7 +54,7 @@ void _mmu2_load_filament(uint8_t index) {
   ui.reset_status();
 }
 void action_mmu2_load_all() {
-  for (uint8_t i = 0; i < EXTRUDERS; i++)
+  LOOP_L_N(i, EXTRUDERS)
     _mmu2_load_filament(i);
   ui.return_to_status();
 }
@@ -63,22 +63,14 @@ void menu_mmu2_load_filament() {
   START_MENU();
   BACK_ITEM(MSG_MMU2_MENU);
   ACTION_ITEM(MSG_MMU2_ALL, action_mmu2_load_all);
-  ACTION_ITEM_N(0, MSG_MMU2_FILAMENT_N, []{ _mmu2_load_filament(0); });
-  ACTION_ITEM_N(1, MSG_MMU2_FILAMENT_N, []{ _mmu2_load_filament(1); });
-  ACTION_ITEM_N(2, MSG_MMU2_FILAMENT_N, []{ _mmu2_load_filament(2); });
-  ACTION_ITEM_N(3, MSG_MMU2_FILAMENT_N, []{ _mmu2_load_filament(3); });
-  ACTION_ITEM_N(4, MSG_MMU2_FILAMENT_N, []{ _mmu2_load_filament(4); });
+  LOOP_L_N(i, 5) ACTION_ITEM_N(i, MSG_MMU2_FILAMENT_N, []{ _mmu2_load_filament(MenuItemBase::itemIndex); });
   END_MENU();
 }
 
 void menu_mmu2_load_to_nozzle() {
   START_MENU();
   BACK_ITEM(MSG_MMU2_MENU);
-  ACTION_ITEM_N(0, MSG_MMU2_FILAMENT_N, []{ action_mmu2_load_filament_to_nozzle(0); });
-  ACTION_ITEM_N(1, MSG_MMU2_FILAMENT_N, []{ action_mmu2_load_filament_to_nozzle(1); });
-  ACTION_ITEM_N(2, MSG_MMU2_FILAMENT_N, []{ action_mmu2_load_filament_to_nozzle(2); });
-  ACTION_ITEM_N(3, MSG_MMU2_FILAMENT_N, []{ action_mmu2_load_filament_to_nozzle(3); });
-  ACTION_ITEM_N(4, MSG_MMU2_FILAMENT_N, []{ action_mmu2_load_filament_to_nozzle(4); });
+  LOOP_L_N(i, 5) ACTION_ITEM_N(i, MSG_MMU2_FILAMENT_N, []{ action_mmu2_load_filament_to_nozzle(MenuItemBase::itemIndex); });
   END_MENU();
 }
 
@@ -104,11 +96,7 @@ void action_mmu2_unload_filament() {
 void menu_mmu2_eject_filament() {
   START_MENU();
   BACK_ITEM(MSG_MMU2_MENU);
-  ACTION_ITEM_N(0, MSG_MMU2_FILAMENT_N, []{ _mmu2_eject_filament(0); });
-  ACTION_ITEM_N(1, MSG_MMU2_FILAMENT_N, []{ _mmu2_eject_filament(1); });
-  ACTION_ITEM_N(2, MSG_MMU2_FILAMENT_N, []{ _mmu2_eject_filament(2); });
-  ACTION_ITEM_N(3, MSG_MMU2_FILAMENT_N, []{ _mmu2_eject_filament(3); });
-  ACTION_ITEM_N(4, MSG_MMU2_FILAMENT_N, []{ _mmu2_eject_filament(4); });
+  LOOP_L_N(i, 5) ACTION_ITEM_N(i, MSG_MMU2_FILAMENT_N, []{ _mmu2_eject_filament(MenuItemBase::itemIndex); });
   END_MENU();
 }
 
@@ -146,11 +134,7 @@ void menu_mmu2_choose_filament() {
   #if LCD_HEIGHT > 2
     STATIC_ITEM(MSG_MMU2_CHOOSE_FILAMENT_HEADER, SS_CENTER|SS_INVERT);
   #endif
-  ACTION_ITEM_N(0, MSG_MMU2_FILAMENT_N, []{ action_mmu2_choose(0); });
-  ACTION_ITEM_N(1, MSG_MMU2_FILAMENT_N, []{ action_mmu2_choose(1); });
-  ACTION_ITEM_N(2, MSG_MMU2_FILAMENT_N, []{ action_mmu2_choose(2); });
-  ACTION_ITEM_N(3, MSG_MMU2_FILAMENT_N, []{ action_mmu2_choose(3); });
-  ACTION_ITEM_N(4, MSG_MMU2_FILAMENT_N, []{ action_mmu2_choose(4); });
+  LOOP_L_N(i, 5) ACTION_ITEM_N(i, MSG_MMU2_FILAMENT_N, []{ action_mmu2_choose(MenuItemBase::itemIndex); });
   END_MENU();
 }
 
