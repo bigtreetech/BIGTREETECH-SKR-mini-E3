@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -219,9 +219,6 @@ bool MarlinUI::detected() { return true; }
 
   // Show the Marlin bootscreen, with the u8g loop and delays
   void MarlinUI::show_marlin_bootscreen() {
-    #ifndef BOOTSCREEN_TIMEOUT
-      #define BOOTSCREEN_TIMEOUT 2500
-    #endif
     constexpr uint8_t pages = two_part ? 2 : 1;
     for (uint8_t q = pages; q--;) {
       draw_marlin_bootscreen(q == 0);
@@ -244,48 +241,51 @@ bool MarlinUI::detected() { return true; }
 
 // Initialize or re-initialize the LCD
 void MarlinUI::init_lcd() {
+  #if DISABLED(MKS_LCD12864B)
 
-  #if PIN_EXISTS(LCD_BACKLIGHT)
-    OUT_WRITE(LCD_BACKLIGHT_PIN, (
-      #if ENABLED(DELAYED_BACKLIGHT_INIT)
-        LOW  // Illuminate after reset
-      #else
-        HIGH // Illuminate right away
-      #endif
-    ));
-  #endif
-
-  #if EITHER(MKS_12864OLED, MKS_12864OLED_SSD1306)
-    SET_OUTPUT(LCD_PINS_DC);
-    #ifndef LCD_RESET_PIN
-      #define LCD_RESET_PIN LCD_PINS_RS
+    #if PIN_EXISTS(LCD_BACKLIGHT)
+      OUT_WRITE(LCD_BACKLIGHT_PIN, (
+        #if ENABLED(DELAYED_BACKLIGHT_INIT)
+          LOW  // Illuminate after reset
+        #else
+          HIGH // Illuminate right away
+        #endif
+      ));
     #endif
-  #endif
 
-  #if PIN_EXISTS(LCD_RESET)
-    // Perform a clean hardware reset with needed delays
-    OUT_WRITE(LCD_RESET_PIN, LOW);
-    _delay_ms(5);
-    WRITE(LCD_RESET_PIN, HIGH);
-    _delay_ms(5);
-    u8g.begin();
-  #endif
+    #if EITHER(MKS_12864OLED, MKS_12864OLED_SSD1306)
+      SET_OUTPUT(LCD_PINS_DC);
+      #ifndef LCD_RESET_PIN
+        #define LCD_RESET_PIN LCD_PINS_RS
+      #endif
+    #endif
 
-  #if PIN_EXISTS(LCD_BACKLIGHT) && ENABLED(DELAYED_BACKLIGHT_INIT)
-    WRITE(LCD_BACKLIGHT_PIN, HIGH);
-  #endif
+    #if PIN_EXISTS(LCD_RESET)
+      // Perform a clean hardware reset with needed delays
+      OUT_WRITE(LCD_RESET_PIN, LOW);
+      _delay_ms(5);
+      WRITE(LCD_RESET_PIN, HIGH);
+      _delay_ms(5);
+      u8g.begin();
+    #endif
 
-  #if HAS_LCD_CONTRAST
-    refresh_contrast();
-  #endif
+    #if PIN_EXISTS(LCD_BACKLIGHT) && ENABLED(DELAYED_BACKLIGHT_INIT)
+      WRITE(LCD_BACKLIGHT_PIN, HIGH);
+    #endif
 
-  #if ENABLED(LCD_SCREEN_ROT_90)
-    u8g.setRot90();
-  #elif ENABLED(LCD_SCREEN_ROT_180)
-    u8g.setRot180();
-  #elif ENABLED(LCD_SCREEN_ROT_270)
-    u8g.setRot270();
-  #endif
+    #if HAS_LCD_CONTRAST
+      refresh_contrast();
+    #endif
+
+    #if ENABLED(LCD_SCREEN_ROT_90)
+      u8g.setRot90();
+    #elif ENABLED(LCD_SCREEN_ROT_180)
+      u8g.setRot180();
+    #elif ENABLED(LCD_SCREEN_ROT_270)
+      u8g.setRot270();
+    #endif
+
+  #endif // !MKS_LCD12864B
 
   uxg_SetUtf8Fonts(g_fontinfo, COUNT(g_fontinfo));
 }
@@ -324,11 +324,11 @@ void MarlinUI::clear_lcd() { } // Automatically cleared by Picture Loop
       lcd_put_wchar(LCD_PIXEL_WIDTH - 11 * (MENU_FONT_WIDTH), row_y2, 'E');
       lcd_put_wchar((char)('1' + extruder));
       lcd_put_wchar(' ');
-      lcd_put_u8str(i16tostr3(thermalManager.degHotend(extruder)));
+      lcd_put_u8str(i16tostr3rj(thermalManager.degHotend(extruder)));
       lcd_put_wchar('/');
 
       if (get_blink() || !thermalManager.hotend_idle[extruder].timed_out)
-        lcd_put_u8str(i16tostr3(thermalManager.degTargetHotend(extruder)));
+        lcd_put_u8str(i16tostr3rj(thermalManager.degTargetHotend(extruder)));
     }
 
   #endif // ADVANCED_PAUSE_FEATURE
@@ -545,9 +545,9 @@ void MarlinUI::clear_lcd() { } // Automatically cleared by Picture Loop
       if (PAGE_UNDER(7)) {
         const xy_pos_t pos = { ubl.mesh_index_to_xpos(x_plot), ubl.mesh_index_to_ypos(y_plot) },
                        lpos = pos.asLogical();
-        lcd_put_u8str(5, 7, "X:");
+        lcd_put_u8str_P(5, 7, X_LBL);
         lcd_put_u8str(ftostr52(lpos.x));
-        lcd_put_u8str(74, 7, "Y:");
+        lcd_put_u8str_P(74, 7, Y_LBL);
         lcd_put_u8str(ftostr52(lpos.y));
       }
 
@@ -560,7 +560,7 @@ void MarlinUI::clear_lcd() { } // Automatically cleared by Picture Loop
         lcd_put_wchar(')');
 
         // Show the location value
-        lcd_put_u8str(74, LCD_PIXEL_HEIGHT, "Z:");
+        lcd_put_u8str_P(74, LCD_PIXEL_HEIGHT, Z_LBL);
         if (!isnan(ubl.z_values[x_plot][y_plot]))
           lcd_put_u8str(ftostr43sign(ubl.z_values[x_plot][y_plot]));
         else
