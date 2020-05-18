@@ -7,3 +7,7 @@ BIGTREETECH SKR-mini-E3 motherboard is a ultra-quiet, low-power, high-quality 3D
       If your motherbord version is BTT SKR mini E3 V1.2, please check the BTT SKR mini E3 V1.2 document which is in the firmware and hardware files.
   The refer to check the main differences of the BTT SKR mini E3 V1.2：
   [The notement of BTT SKR MINI E3 V1.2](https://github.com/bigtreetech/BIGTREETECH-SKR-mini-E3/blob/master/hardware/BTT%20SKR%20MINI%20E3%20V1.2/The%20Notement%20of%20BTT%20SKR%20MINI%20E3%20V1.2.pdf)
+
+  
+  
+ Increased BTT SKR Mini E3 v2.0 motherboard open source materials.
