@@ -11,3 +11,8 @@ BIGTREETECH SKR-mini-E3 motherboard is a ultra-quiet, low-power, high-quality 3D
   
   
  Increased BTT SKR Mini E3 v2.0 motherboard open source materials.
+ 
+ 
+ 
+
+ After refreshing the new firmware, please restore defaults first and then store settings, the new coordinates used for leveling will take effect, LCD option path: Configuration-> restore defaults, Configuration-> store settings.
