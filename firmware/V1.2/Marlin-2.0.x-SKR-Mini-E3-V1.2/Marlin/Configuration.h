@@ -482,7 +482,7 @@
                                   // is more than PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
 
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
-						  
+
 						 
 						  
 
@@ -1308,7 +1308,7 @@
 /**
  * Add a bed leveling sub-menu for ABL or MBL.
  * Include a guided procedure if manual probing is enabled.
- *
+ */
 //#define LCD_BED_LEVELING
 
 #if ENABLED(LCD_BED_LEVELING)
