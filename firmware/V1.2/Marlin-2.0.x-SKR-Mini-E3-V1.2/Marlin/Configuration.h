@@ -18,6 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
+ * Manufactory Dave's clone for SKR Mini E3 on an Xvico X3 Pro
  */
 #pragma once
 
