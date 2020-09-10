@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 #pragma once
@@ -57,7 +57,7 @@
  *
  * Now you can simply SET_OUTPUT(PIN); WRITE(PIN, HIGH); WRITE(PIN, LOW);
  *
- * Why double up on these macros? see http://gcc.gnu.org/onlinedocs/cpp/Stringification.html
+ * Why double up on these macros? see https://gcc.gnu.org/onlinedocs/cpp/Stringification.html
  */
 
 #define _READ(IO)             TEST(DIO ## IO ## _RPORT, DIO ## IO ## _PIN)
@@ -98,9 +98,9 @@
 
 #define SET_INPUT(IO)         _SET_INPUT(IO)
 #define SET_INPUT_PULLUP(IO)  do{ _SET_INPUT(IO); _WRITE(IO, HIGH); }while(0)
+#define SET_INPUT_PULLDOWN    SET_INPUT
 #define SET_OUTPUT(IO)        _SET_OUTPUT(IO)
-
-#define SET_PWM(IO)           SET_OUTPUT(IO)
+#define SET_PWM               SET_OUTPUT
 
 #define IS_INPUT(IO)          _IS_INPUT(IO)
 #define IS_OUTPUT(IO)         _IS_OUTPUT(IO)

@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 #pragma once
@@ -35,6 +35,7 @@ enum DGUSLCD_Screens : uint8_t {
   DGUSLCD_SCREEN_FILAMENT_LOADING     =  76,
   DGUSLCD_SCREEN_FILAMENT_UNLOADING   =  82,
   DGUSLCD_SCREEN_MANUALEXTRUDE        =  84,
+  DGUSLCD_SCREEN_Z_OFFSET             =  88,
   DGUSLCD_SCREEN_SDFILELIST           =   3,
   DGUSLCD_SCREEN_SDPRINTMANIPULATION  =   7,
   DGUSLCD_SCREEN_SDPRINTTUNE          =   9,

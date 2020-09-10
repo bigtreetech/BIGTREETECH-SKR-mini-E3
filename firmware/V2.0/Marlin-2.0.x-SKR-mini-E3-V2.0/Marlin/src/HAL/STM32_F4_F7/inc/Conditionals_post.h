@@ -16,13 +16,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 #pragma once
 
 #if ENABLED(EEPROM_SETTINGS) && defined(STM32F7)
-  #undef USE_REAL_EEPROM
+  #undef USE_WIRED_EEPROM
   #undef SRAM_EEPROM_EMULATION
   #undef SDCARD_EEPROM_EMULATION
   #define FLASH_EEPROM_EMULATION

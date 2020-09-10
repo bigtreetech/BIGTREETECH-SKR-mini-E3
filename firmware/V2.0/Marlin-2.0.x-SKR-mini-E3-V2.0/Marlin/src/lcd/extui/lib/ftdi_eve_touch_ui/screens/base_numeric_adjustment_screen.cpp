@@ -17,7 +17,7 @@
  *   GNU General Public License for more details.                           *
  *                                                                          *
  *   To view a copy of the GNU General Public License, go to the following  *
- *   location: <http://www.gnu.org/licenses/>.                              *
+ *   location: <https://www.gnu.org/licenses/>.                              *
  ****************************************************************************/
 
 #include "../config.h"
@@ -73,13 +73,13 @@ void BaseNumericAdjustmentScreen::widgets_t::_button_style(CommandProcessor &cmd
     const btn_colors *old_colors = &normal_btn;
     const btn_colors *new_colors = &normal_btn;
 
-    switch(_style) {
+    switch (_style) {
       case BTN_ACTION:   old_colors = &action_btn;   break;
       case BTN_TOGGLE:   old_colors = &ui_toggle;    break;
       case BTN_DISABLED: old_colors = &disabled_btn; break;
       default: break;
     }
-    switch(style) {
+    switch (style) {
       case BTN_ACTION:   new_colors = &action_btn;   break;
       case BTN_TOGGLE:   new_colors = &ui_toggle;    break;
       case BTN_DISABLED: new_colors = &disabled_btn; break;
@@ -345,10 +345,14 @@ void BaseNumericAdjustmentScreen::widgets_t::home_buttons(uint8_t tag) {
   }
 
   cmd.font(LAYOUT_FONT);
- _button(cmd, tag+0, BTN_POS(5,_line),  BTN_SIZE(2,1), GET_TEXT_F(MSG_AXIS_X));
- _button(cmd, tag+1, BTN_POS(7,_line),  BTN_SIZE(2,1), GET_TEXT_F(MSG_AXIS_Y));
- _button(cmd, tag+2, BTN_POS(9,_line),  BTN_SIZE(2,1), GET_TEXT_F(MSG_AXIS_Z));
- _button(cmd, tag+3, BTN_POS(11,_line), BTN_SIZE(3,1), GET_TEXT_F(MSG_AXIS_ALL));
+ _button(cmd, tag+0, BTN_POS(5,_line),    BTN_SIZE(2,1), GET_TEXT_F(MSG_AXIS_X));
+ _button(cmd, tag+1, BTN_POS(7,_line),    BTN_SIZE(2,1), GET_TEXT_F(MSG_AXIS_Y));
+ #if DISABLED(Z_SAFE_HOMING)
+   _button(cmd, tag+2, BTN_POS(9,_line),  BTN_SIZE(2,1), GET_TEXT_F(MSG_AXIS_Z));
+   _button(cmd, tag+3, BTN_POS(11,_line), BTN_SIZE(3,1), GET_TEXT_F(MSG_AXIS_ALL));
+ #else
+   _button(cmd, tag+3, BTN_POS(9,_line),  BTN_SIZE(3,1), GET_TEXT_F(MSG_AXIS_ALL));
+ #endif
 
   _line++;
 }

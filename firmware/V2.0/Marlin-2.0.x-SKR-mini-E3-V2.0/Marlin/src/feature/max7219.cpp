@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 
@@ -121,7 +121,7 @@ uint8_t Max7219::suspended; // = 0;
   #define CRITICAL_SECTION_START() NOOP
   #define CRITICAL_SECTION_END()   NOOP
 #else
-  #define SIG_DELAY() DELAY_NS(188) // Delay for 0.1875µs (16MHz AVR) or 0.15µs (20MHz AVR)
+  #define SIG_DELAY() DELAY_NS(250)
 #endif
 
 void Max7219::error(const char * const func, const int32_t v1, const int32_t v2/*=-1*/) {

@@ -16,7 +16,7 @@
  *   GNU General Public License for more details.                           *
  *                                                                          *
  *   To view a copy of the GNU General Public License, go to the following  *
- *   location: <http://www.gnu.org/licenses/>.                              *
+ *   location: <https://www.gnu.org/licenses/>.                              *
  ****************************************************************************/
 
 #include "../config.h"
@@ -77,9 +77,6 @@ void PreheatTimerScreen::draw_interaction_buttons(draw_mode_t what) {
 
 void PreheatTimerScreen::onEntry() {
   screen_data.PreheatTimerScreen.start_ms = millis();
-  #ifdef COCOA_PRESS_PREHEAT_SCRIPT
-    injectCommands_P(PSTR(COCOA_PRESS_PREHEAT_SCRIPT));
-  #endif
 }
 
 void PreheatTimerScreen::onRedraw(draw_mode_t what) {

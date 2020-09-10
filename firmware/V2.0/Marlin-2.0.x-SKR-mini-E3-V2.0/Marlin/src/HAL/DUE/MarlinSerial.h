@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 #pragma once
@@ -172,13 +172,9 @@ struct MarlinSerialCfg {
 };
 
 #if SERIAL_PORT >= 0
-
   extern MarlinSerial<MarlinSerialCfg<SERIAL_PORT>> customizedSerial1;
+#endif
 
-#endif // SERIAL_PORT >= 0
-
-#ifdef SERIAL_PORT_2
-
+#if defined(SERIAL_PORT_2) && SERIAL_PORT_2 >= 0
   extern MarlinSerial<MarlinSerialCfg<SERIAL_PORT_2>> customizedSerial2;
-
 #endif

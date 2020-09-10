@@ -3,14 +3,14 @@
  *
  * Multi-instance software serial library for Arduino/Wiring
  * -- Interrupt-driven receive and other improvements by ladyada
- *    (http://ladyada.net)
+ *    (https://ladyada.net)
  * -- Tuning, circular buffer, derivation from class Print/Stream,
  *    multi-instance support, porting to 8MHz processors,
  *    various optimizations, PROGMEM delay tables, inverse logic and
  *    direct port writing by Mikal Hart (http://www.arduiniana.org)
- * -- Pin change interrupt macros by Paul Stoffregen (http://www.pjrc.com)
+ * -- Pin change interrupt macros by Paul Stoffregen (https://www.pjrc.com)
  * -- 20MHz processor support by Garrett Mace (http://www.macetech.com)
- * -- ATmega1280/2560 support by Brett Hagman (http://www.roguerobotics.com/)
+ * -- ATmega1280/2560 support by Brett Hagman (https://www.roguerobotics.com/)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,9 +29,7 @@
  * The latest version of this library can always be found at
  * http://arduiniana.org.
  */
-
-#ifndef SOFTWARESERIAL_H
-#define SOFTWARESERIAL_H
+#pragma once
 
 #include <Arduino.h>
 
@@ -64,7 +62,6 @@ class SoftwareSerial : public Stream {
     uint32_t delta_start = 0;
 
     // static data
-    static bool initialised;
     static HardwareTimer timer;
     static const IRQn_Type timer_interrupt_number;
     static uint32_t timer_interrupt_priority;
@@ -91,7 +88,7 @@ class SoftwareSerial : public Stream {
   public:
     // public methods
 
-    SoftwareSerial(uint16_t receivePin, uint16_t transmitPin, bool inverse_logic = false);
+    SoftwareSerial(uint16_t receivePin, uint16_t transmitPin, bool inverse_logic=false);
     virtual ~SoftwareSerial();
     void begin(long speed);
     bool listen();
@@ -115,5 +112,3 @@ class SoftwareSerial : public Stream {
 
     using Print::write;
 };
-
-#endif // SOFTWARESERIAL_H

@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 #pragma once
@@ -56,7 +56,7 @@
 #define SET_OUTPUT(IO)          do{ _SET_OUTPUT(IO); }while(0)
 
 // Set pin as PWM
-#define SET_PWM(IO)             SET_OUTPUT(IO)
+#define SET_PWM                 SET_OUTPUT
 
 // Set pin as output and init
 #define OUT_WRITE(IO,V)         do{ _SET_OUTPUT(IO); WRITE(IO,V); }while(0)
