@@ -22,7 +22,7 @@
 
 #include "../compat.h"
 
-#if ENABLED()
+#if ENABLED(TOUCH_UI_FTDI_EVE)
 
 #include "../ftdi_eve_lib/ftdi_eve_lib.h"
 

@@ -27,7 +27,7 @@ typedef const char Language_Str[];
 #elif defined(LCD_LANGUAGE_4)
   #define NUM_LANGUAGES 4
 #elif defined(LCD_LANGUAGE_3)
-  #define  3
+  #define NUM_LANGUAGES 3
 #elif defined(LCD_LANGUAGE_2)
   #define NUM_LANGUAGES 2
 #else

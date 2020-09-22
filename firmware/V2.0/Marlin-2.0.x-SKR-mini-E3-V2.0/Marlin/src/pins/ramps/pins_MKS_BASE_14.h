@@ -57,18 +57,7 @@
 #ifndef CASE_LIGHT_PIN
   #define CASE_LIGHT_PIN                      11  // PB5 ** Pin24 ** PWM11
 #endif
- #ifndef ST7920_DELAY_1
-      #define ST7920_DELAY_1 DELAY_NS(0)
-    #endif
-    #ifndef ST7920_DELAY_2
-      #define ST7920_DELAY_2 DELAY_NS(63)
-    #endif
-    #ifndef ST7920_DELAY_3
-      #define ST7920_DELAY_3 DELAY_NS(125)
- #endif
 
-  #define LCD_LANGUAGE_1 en
-  #define LCD_LANGUAGE_2 zh_CN
 #include "pins_MKS_BASE_common.h"
 
 /*
