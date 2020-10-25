@@ -1629,7 +1629,7 @@
 //
 // G2/G3 Arc Support
 //
-//#define ARC_SUPPORT                 // Disable this feature to save ~3226 bytes
+#define ARC_SUPPORT                 // Disable this feature to save ~3226 bytes
 #if ENABLED(ARC_SUPPORT)
   #define MM_PER_ARC_SEGMENT      1 // (mm) Length (or minimum length) of each arc segment
   //#define ARC_SEGMENTS_PER_R    1 // Max segment length, MM_PER = Min
@@ -2845,16 +2845,32 @@
 /**
  * User-defined menu items that execute custom GCode
  */
-//#define CUSTOM_USER_MENUS
+#define CUSTOM_USER_MENUS
 #if ENABLED(CUSTOM_USER_MENUS)
-  //#define CUSTOM_USER_MENU_TITLE "Custom Commands"
+  #define CUSTOM_USER_MENU_TITLE "Custom Commands"
   #define USER_SCRIPT_DONE "M117 User Script Done"
   #define USER_SCRIPT_AUDIBLE_FEEDBACK
-  //#define USER_SCRIPT_RETURN  // Return to status screen after a script
+  #define USER_SCRIPT_RETURN  // Return to status screen after a script
 
-  #define USER_DESC_1 "Home & UBL Info"
-  #define USER_GCODE_1 "G28\nG29 W"
+  /**
+   * M117 Cold-Pull Pre-heating...
+   * M109 S200
+   * M83          ;extruder to relative
+   * G1 F600 E10  ;extrude 10mm
+   * M117 Cooling to pull temp...
+   * M109 S110
+   * M302 S0      ;disable cold-pull temp
+   * G1 F600 E-10 ;retract 10mm
+   * G0 E-350
+   * G92 E0       ;reset extruder
+   * M82          ;extruder to absolute
+   * M104 S0      ;extruder off
+   * M302 S170    ;reset cold-pull min. temp
+   **/
+  #define USER_DESC_1 "Cold Pull 110C"
+  #define USER_GCODE_1 "M117 Cold-Pull Pre-heating...\nM109 S200\n\nM83\nG1 F600 E10\nM117 Cooling to pull temp...\nM109 S110\nM302 S0\nG1 F600 E-10\nG0 E-350\nG92 E0\nM82\nM104 S0\nM302 S170"
 
+  /*
   #define USER_DESC_2 "Preheat for " PREHEAT_1_LABEL
   #define USER_GCODE_2 "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
 
@@ -2866,6 +2882,7 @@
 
   #define USER_DESC_5 "Home & Info"
   #define USER_GCODE_5 "G28\nM503"
+*/
 #endif
 
 /**
