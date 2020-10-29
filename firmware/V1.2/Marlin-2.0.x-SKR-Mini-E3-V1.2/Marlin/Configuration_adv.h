@@ -2867,8 +2867,10 @@
    * M104 S0      ;extruder off
    * M302 S170    ;reset cold-pull min. temp
    **/
+  /*
   #define USER_DESC_1 "Cold Pull 110C"
   #define USER_GCODE_1 "M117 Cold-Pull Pre-heating...\nM109 S200\n\nM83\nG1 F600 E10\nM117 Cooling to pull temp...\nM109 S110\nM302 S0\nG1 F600 E-10\nG0 E-350\nG92 E0\nM82\nM104 S0\nM302 S170"
+  */
 
   /*
   #define USER_DESC_2 "Preheat for " PREHEAT_1_LABEL
