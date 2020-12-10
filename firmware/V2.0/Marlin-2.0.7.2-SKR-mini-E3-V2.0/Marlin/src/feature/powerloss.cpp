@@ -522,6 +522,7 @@ void PrintJobRecovery::resume() {
   // Continue to apply PLR when a file is resumed!
   enable(true);
 
+  gcode.process_subcommands_now_P(PSTR("M21"));
   // Resume the SD file from the last position
   char *fn = info.sd_filename;
   extern const char M23_STR[];
