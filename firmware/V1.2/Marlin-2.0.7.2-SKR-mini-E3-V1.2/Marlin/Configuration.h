@@ -21,7 +21,7 @@
  */
 #pragma once
 
-#define CONFIG_EXAMPLES_DIR "Creality/Ender-3/BigTreeTech SKR Mini E3 1.2"
+#define CONFIG_EXAMPLES_DIR "Bartosz Majkut/BigTreeTech SKR Mini E3 1.2"
 
 /**
  * Configuration.h
@@ -483,8 +483,8 @@
 #define PID_K1 0.95      // Smoothing factor within any PID loop
 
 #if ENABLED(PIDTEMP)
-  //#define PID_EDIT_MENU         // Add PID editing to the "Advanced Settings" menu. (~700 bytes of PROGMEM)
-  //#define PID_AUTOTUNE_MENU     // Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of PROGMEM)
+  #define PID_EDIT_MENU         // Add PID editing to the "Advanced Settings" menu. (~700 bytes of PROGMEM)
+  #define PID_AUTOTUNE_MENU     // Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of PROGMEM)
   //#define PID_PARAMS_PER_HOTEND // Uses separate PID parameters for each extruder (useful for mismatched extruders)
                                   // Set/get with gcode: M301 E[extruder number, 0-2]
 
@@ -496,9 +496,9 @@
     #define DEFAULT_Ki_LIST {   1.54,   1.54 }
     #define DEFAULT_Kd_LIST {  76.55,  76.55 }
   #else
-    #define DEFAULT_Kp  21.73
-    #define DEFAULT_Ki   1.54
-    #define DEFAULT_Kd  76.55
+    #define DEFAULT_Kp  28.82
+    #define DEFAULT_Ki   2.66
+    #define DEFAULT_Kd  77.98
   #endif
 #endif // PIDTEMP
 
@@ -519,7 +519,7 @@
  * heater. If your configuration is significantly different than this and you don't understand
  * the issues involved, don't use bed PID until someone else verifies that your hardware works.
  */
-//#define PIDTEMPBED
+#define PIDTEMPBED
 
 //#define BED_LIMIT_SWITCHING
 
@@ -535,9 +535,9 @@
   //#define MIN_BED_POWER 0
   //#define PID_BED_DEBUG // Sends debug data to the serial port.
 
-  #define DEFAULT_bedKp 50.71
-  #define DEFAULT_bedKi 9.88
-  #define DEFAULT_bedKd 173.43
+  #define DEFAULT_bedKp 49.38
+  #define DEFAULT_bedKi 9.62
+  #define DEFAULT_bedKd 168.88
 
   // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
 #endif // PIDTEMPBED
@@ -560,7 +560,7 @@
  * *** IT IS HIGHLY RECOMMENDED TO LEAVE THIS OPTION ENABLED! ***
  */
 #define PREVENT_COLD_EXTRUSION
-#define EXTRUDE_MINTEMP 170
+#define EXTRUDE_MINTEMP 10
 
 /**
  * Prevent a single extrusion longer than EXTRUDE_MAXLENGTH.
@@ -649,9 +649,9 @@
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define Y_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define Y_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#define Z_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
 #define X_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define Y_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define Z_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -736,14 +736,14 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 93 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 100, 100 }
 
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 500, 500, 5, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 400, 400, 8, 50 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -756,7 +756,7 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 500, 500, 100, 5000 }
+#define DEFAULT_MAX_ACCELERATION      { 500, 500, 100, 100 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -771,7 +771,7 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          500    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_ACCELERATION          400    // X, Y, Z and E acceleration for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  500    // E acceleration for retracts
 #define DEFAULT_TRAVEL_ACCELERATION   500    // X, Y, Z acceleration for travel (non printing) moves
 
@@ -807,7 +807,7 @@
  *   https://blog.kyneticcnc.com/2018/10/computing-junction-deviation-for-marlin.html
  */
 #if DISABLED(CLASSIC_JERK)
-  #define JUNCTION_DEVIATION_MM 0.08  // (mm) Distance from real junction edge
+  #define JUNCTION_DEVIATION_MM 0.1  // (mm) Distance from real junction edge
   #define JD_HANDLE_SMALL_SEGMENTS    // Use curvature estimation instead of just the junction angle
                                       // for small segments (< 1mm) with large junction angles (> 135°).
 #endif
@@ -981,17 +981,17 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { -40, -10, -1.85 }
+#define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0 }
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
 #define PROBING_MARGIN 10
 
 // X and Y axis travel speed (mm/min) between probes
-#define XY_PROBE_SPEED (133*60)
+#define XY_PROBE_SPEED (100*60)
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
-#define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z
+#define Z_PROBE_SPEED_FAST (4*60)
 
 // Feedrate (mm/min) for the "accurate" probe of each point
 #define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 2)
@@ -1081,14 +1081,14 @@
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR true
+#define INVERT_X_DIR false
 #define INVERT_Y_DIR true
 #define INVERT_Z_DIR false
 
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#define INVERT_E0_DIR true
+#define INVERT_E0_DIR false
 #define INVERT_E1_DIR false
 #define INVERT_E2_DIR false
 #define INVERT_E3_DIR false
@@ -1117,8 +1117,8 @@
 // @section machine
 
 // The size of the print bed
-#define X_BED_SIZE 235
-#define Y_BED_SIZE 235
+#define X_BED_SIZE 220
+#define Y_BED_SIZE 220
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MIN_POS 0
@@ -1336,7 +1336,7 @@
  * Add a bed leveling sub-menu for ABL or MBL.
  * Include a guided procedure if manual probing is enabled.
  */
-//#define LCD_BED_LEVELING
+// #define LCD_BED_LEVELING
 
 #if ENABLED(LCD_BED_LEVELING)
   #define MESH_EDIT_Z_STEP  0.025 // (mm) Step size while manually probing Z axis.
@@ -1345,7 +1345,7 @@
 #endif
 
 // Add a menu item to move between bed corners for manual bed adjustment
-//#define LEVEL_BED_CORNERS
+#define LEVEL_BED_CORNERS
 
 #if ENABLED(LEVEL_BED_CORNERS)
   #define LEVEL_CORNERS_INSET_LFRB { 30, 30, 30, 30 } // (mm) Left, Front, Right, Back insets
@@ -1424,17 +1424,17 @@
  *    +-------------->X     +-------------->X     +-------------->Y
  *     XY_SKEW_FACTOR        XZ_SKEW_FACTOR        YZ_SKEW_FACTOR
  */
-//#define SKEW_CORRECTION
+// #define SKEW_CORRECTION
 
 #if ENABLED(SKEW_CORRECTION)
   // Input all length measurements here:
-  #define XY_DIAG_AC 282.8427124746
-  #define XY_DIAG_BD 282.8427124746
-  #define XY_SIDE_AD 200
+  #define XY_DIAG_AC 141.69
+  #define XY_DIAG_BD 141.36
+  #define XY_SIDE_AD 100.42
 
   // Or, set the default skew factors directly here
   // to override the above measurements:
-  #define XY_SKEW_FACTOR 0.0
+  // #define XY_SKEW_FACTOR 0.0
 
   //#define SKEW_CORRECTION_FOR_Z
   #if ENABLED(SKEW_CORRECTION_FOR_Z)
@@ -1448,7 +1448,7 @@
   #endif
 
   // Enable this option for M852 to set skew at runtime
-  //#define SKEW_CORRECTION_GCODE
+  #define SKEW_CORRECTION_GCODE
 #endif
 
 //=============================================================================
@@ -1498,8 +1498,8 @@
 
 // Preheat Constants
 #define PREHEAT_1_LABEL       "PLA"
-#define PREHEAT_1_TEMP_HOTEND 185
-#define PREHEAT_1_TEMP_BED     45
+#define PREHEAT_1_TEMP_HOTEND 190
+#define PREHEAT_1_TEMP_BED     60
 #define PREHEAT_1_FAN_SPEED   255 // Value from 0 to 255
 
 #define PREHEAT_2_LABEL       "ABS"
@@ -1525,7 +1525,7 @@
   #define NOZZLE_PARK_POINT { (X_MIN_POS + 10), (Y_MAX_POS - 10), 20 }
   //#define NOZZLE_PARK_X_ONLY          // X move only is required to park
   //#define NOZZLE_PARK_Y_ONLY          // Y move only is required to park
-  #define NOZZLE_PARK_Z_RAISE_MIN   2   // (mm) Always raise Z by at least this distance
+  #define NOZZLE_PARK_Z_RAISE_MIN   10   // (mm) Always raise Z by at least this distance
   #define NOZZLE_PARK_XY_FEEDRATE 100   // (mm/s) X and Y axes feedrate (also used for delta Z axis)
   #define NOZZLE_PARK_Z_FEEDRATE    5   // (mm/s) Z axis feedrate (not used for delta printers)
 #endif
@@ -2349,16 +2349,16 @@
 #endif
 
 // Support for Adafruit NeoPixel LED driver
-//#define NEOPIXEL_LED
+#define NEOPIXEL_LED
 #if ENABLED(NEOPIXEL_LED)
   #define NEOPIXEL_TYPE   NEO_GRB // NEO_GRBW / NEO_GRB - four/three channel driver type (defined in Adafruit_NeoPixel.h)
-  // #define NEOPIXEL_PIN     4       // LED driving pin
+  #define NEOPIXEL_PIN     PC7       // LED driving pin
   //#define NEOPIXEL2_TYPE NEOPIXEL_TYPE
   //#define NEOPIXEL2_PIN    5
-  #define NEOPIXEL_PIXELS 30       // Number of LEDs in the strip. (Longest strip when NEOPIXEL2_SEPARATE is disabled.)
-  #define NEOPIXEL_IS_SEQUENTIAL   // Sequential display for temperature change - LED by LED. Disable to change all LEDs at once.
+  #define NEOPIXEL_PIXELS 2       // Number of LEDs in the strip. (Longest strip when NEOPIXEL2_SEPARATE is disabled.)
+  // #define NEOPIXEL_IS_SEQUENTIAL   // Sequential display for temperature change - LED by LED. Disable to change all LEDs at once.
   #define NEOPIXEL_BRIGHTNESS 127  // Initial brightness (0-255)
-  //#define NEOPIXEL_STARTUP_TEST  // Cycle through colors at startup
+  #define NEOPIXEL_STARTUP_TEST  // Cycle through colors at startup
 
   // Support for second Adafruit NeoPixel LED driver controlled with M150 S1 ...
   //#define NEOPIXEL2_SEPARATE

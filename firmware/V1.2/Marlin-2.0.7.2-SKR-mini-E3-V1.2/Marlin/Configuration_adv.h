@@ -21,7 +21,7 @@
  */
 #pragma once
 
-#define CONFIG_EXAMPLES_DIR "Creality/Ender-3/BigTreeTech SKR Mini E3 1.2"
+#define CONFIG_EXAMPLES_DIR "Bartosz Majkut/BigTreeTech SKR Mini E3 1.2"
 
 /**
  * Configuration_adv.h
@@ -313,7 +313,7 @@
  * Enable Autotemp Mode with M104/M109 F<factor> S<mintemp> B<maxtemp>.
  * Disable by sending M104/M109 with no F parameter (or F0 with AUTOTEMP_PROPORTIONAL).
  */
-#define AUTOTEMP
+// #define AUTOTEMP
 #if ENABLED(AUTOTEMP)
   #define AUTOTEMP_OLDWEIGHT    0.98
   // Turn on AUTOTEMP on M104/M109 by default using proportions set here
@@ -660,7 +660,7 @@
 
 //#define HOMING_BACKOFF_POST_MM { 2, 2, 2 }  // (mm) Backoff from endstops after homing
 
-#define QUICK_HOME                            // If G28 contains XY do a diagonal move first
+// #define QUICK_HOME                            // If G28 contains XY do a diagonal move first
 //#define HOME_Y_BEFORE_X                     // If G28 contains XY home Y before X
 //#define CODEPENDENT_XY_HOMING               // If X/Y can't home without homing Y/X first
 
@@ -1081,7 +1081,7 @@
   #if HAS_BED_PROBE
     //#define PROBE_OFFSET_WIZARD
     #if ENABLED(PROBE_OFFSET_WIZARD)
-      #define PROBE_OFFSET_START -4.0   // Estimated nozzle-to-probe Z offset, plus a little extra
+      #define PROBE_OFFSET_START 0   // Estimated nozzle-to-probe Z offset, plus a little extra
     #endif
   #endif
 
@@ -1098,7 +1098,7 @@
    * LED Control Menu
    * Add LED Control to the LCD menu
    */
-  //#define LED_CONTROL_MENU
+  #define LED_CONTROL_MENU
   #if ENABLED(LED_CONTROL_MENU)
     #define LED_COLOR_PRESETS                 // Enable the Preset Color menu option
     //#define NEO2_COLOR_PRESETS              // Enable a second NeoPixel Preset Color menu option
@@ -1655,7 +1655,7 @@
  *
  * See https://marlinfw.org/docs/features/lin_advance.html for full instructions.
  */
-#define LIN_ADVANCE
+// #define LIN_ADVANCE
 #if ENABLED(LIN_ADVANCE)
   //#define EXTRA_LIN_ADVANCE_K // Enable for second linear advance constants
   #define LIN_ADVANCE_K 0.0    // Unit: mm compression per 1mm/s extruder speed
@@ -1965,7 +1965,7 @@
 #define SERIAL_OVERRUN_PROTECTION
 
 // For serial echo, the number of digits after the decimal point
-//#define SERIAL_FLOAT_PRECISION 4
+#define SERIAL_FLOAT_PRECISION 4
 
 // @section extras
 
@@ -2092,7 +2092,7 @@
  * Requires NOZZLE_PARK_FEATURE.
  * This feature is required for the default FILAMENT_RUNOUT_SCRIPT.
  */
-#define ADVANCED_PAUSE_FEATURE
+// #define ADVANCED_PAUSE_FEATURE
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
   #define PAUSE_PARK_RETRACT_FEEDRATE         60  // (mm/s) Initial retract feedrate.
   #define PAUSE_PARK_RETRACT_LENGTH            2  // (mm) Initial retract.
@@ -2513,10 +2513,10 @@
   #define X2_HYBRID_THRESHOLD    100
   #define Y_HYBRID_THRESHOLD     100
   #define Y2_HYBRID_THRESHOLD    100
-  #define Z_HYBRID_THRESHOLD       3
-  #define Z2_HYBRID_THRESHOLD      3
-  #define Z3_HYBRID_THRESHOLD      3
-  #define Z4_HYBRID_THRESHOLD      3
+  #define Z_HYBRID_THRESHOLD       20
+  #define Z2_HYBRID_THRESHOLD      20
+  #define Z3_HYBRID_THRESHOLD      20
+  #define Z4_HYBRID_THRESHOLD      20
   #define E0_HYBRID_THRESHOLD     30
   #define E1_HYBRID_THRESHOLD     30
   #define E2_HYBRID_THRESHOLD     30
@@ -3116,7 +3116,7 @@
  */
 #define EXTENDED_CAPABILITIES_REPORT
 #if ENABLED(EXTENDED_CAPABILITIES_REPORT)
-  //#define M115_GEOMETRY_REPORT
+  #define M115_GEOMETRY_REPORT
 #endif
 
 /**
@@ -3164,11 +3164,11 @@
 //#define NO_WORKSPACE_OFFSETS
 
 // Extra options for the M114 "Current Position" report
-//#define M114_DETAIL         // Use 'M114` for details to check planner calculations
+#define M114_DETAIL         // Use 'M114` for details to check planner calculations
 //#define M114_REALTIME       // Real current position based on forward kinematics
 //#define M114_LEGACY         // M114 used to synchronize on every call. Enable if needed.
 
-//#define REPORT_FAN_CHANGE   // Report the new fan speed when changed by M106 (and others)
+#define REPORT_FAN_CHANGE   // Report the new fan speed when changed by M106 (and others)
 
 /**
  * Set the number of proportional font spaces required to fill up a typical character space.
@@ -3266,7 +3266,7 @@
  * Host Prompt Support enables Marlin to use the host for user prompts so
  * filament runout and other processes can be managed from the host side.
  */
-//#define HOST_ACTION_COMMANDS
+#define HOST_ACTION_COMMANDS
 #if ENABLED(HOST_ACTION_COMMANDS)
   //#define HOST_PROMPT_SUPPORT
   //#define HOST_START_MENU_ITEM  // Add a menu item that tells the host to start
