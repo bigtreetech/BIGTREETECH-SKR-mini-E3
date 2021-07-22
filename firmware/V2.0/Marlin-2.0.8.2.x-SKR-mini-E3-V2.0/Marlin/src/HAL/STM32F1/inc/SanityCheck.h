@@ -39,9 +39,9 @@
   #error "SERIAL_STATS_DROPPED_RX is not supported on the STM32F1 platform."
 #endif
 
-#if ENABLED(NEOPIXEL_LED)
-  #error "NEOPIXEL_LED (Adafruit NeoPixel) is not supported for HAL/STM32F1. Comment out this line to proceed at your own risk!"
-#endif
+// #if ENABLED(NEOPIXEL_LED)
+//   #error "NEOPIXEL_LED (Adafruit NeoPixel) is not supported for HAL/STM32F1. Comment out this line to proceed at your own risk!"
+// #endif
 
 // Emergency Parser needs at least one serial with HardwareSerial or USBComposite.
 // The USBSerial maple don't allow any hook to implement EMERGENCY_PARSER.
