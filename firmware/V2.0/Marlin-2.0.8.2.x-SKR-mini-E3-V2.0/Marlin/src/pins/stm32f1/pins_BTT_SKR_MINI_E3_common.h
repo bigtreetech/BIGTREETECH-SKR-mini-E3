@@ -162,6 +162,40 @@
     #define LCD_PINS_D7                     PB5
     #define ADC_KEYPAD_PIN                  PA1   // Repurpose servo pin for ADC - CONNECTING TO 5V WILL DAMAGE THE BOARD!
 
+  #elif ENABLED(ANET_FULL_GRAPHICS_LCD)           // ANET A6 LCD FULL GRAPHICS Controller
+    
+    /* 1. Cut the tab off the SKR MINI connector so it can be plugged into the LCD connector the other way. (180 degrees flip)
+    * 2. Swap the LCD's +5V (Pin2) and GND (Pin1) wires. (This is the critical part!)
+    * 3. A wire is needed to connect the Reset switch at J3 (LCD Pin7).
+    *
+    * !!! If you are unsure, ask for help! Your motherboard may be damaged in some circumstances !!!
+    *
+    * The ANET_FULL_GRAPHICS_LCD connector plug:
+    *
+    *                     BEFORE                                   AFTER                            AFTER
+    *                     ______                                   ______                           ______
+    *               5V 1 | 1  2 |  2 GND                    GND 1 | 1  2 |  2 5V                   | 1  2 |
+    *      LCD_PINS_RS 3 | 3  4 |  4 BTN_EN2        LCD_PINS_RS 3 | 3  4 |  4 BTN_EN2              | 3  4 |
+    *  LCD_PINS_ENABLE 5   5  6 |  6 BTN_EN1    LCD_PINS_ENABLE 5   5  6 |  6 BTN_EN1                5  6 |
+    *             open 7 | 7  8 |  8 BTN_ENC               open 7 | 7  8 |  8 BTN_ENC      RESET 7 | 7  8 |
+    *      LCD_PINS_D4 9 | 9 10 | 10 BEEPER_PIN     LCD_PINS_D4 9 | 9 10 | 10 BEEPER_PIN           | 9 10 |
+    *                     ------                                   ------                           ------
+    *                      LCD                                      LCD                               J3
+    */
+
+    #error "CAUTION! ANET_FULL_GRAPHICS_LCD requires wiring modifications. See 'pins_BTT_SKR_MINI_E3_common.h' for details. Comment out this line to continue."
+
+    #define LCD_PINS_RS              PB15
+
+    #define BTN_EN1                  PA10 //Rx1
+    #define BTN_EN2                  PB8
+    #define BTN_ENC                  PA9 //Tx1
+
+    #define LCD_PINS_ENABLE          PB9
+    #define LCD_PINS_D4              PA15
+
+    #define BEEPER_PIN               PB5
+
   #elif EITHER(MKS_MINI_12864, ENDER2_STOCKDISPLAY)
 
     #define BTN_ENC                       EXP1_9
@@ -216,7 +250,7 @@
     #endif
 
   #else
-    #error "Only CR10_STOCKDISPLAY, ZONESTAR_LCD, ENDER2_STOCKDISPLAY, MKS_MINI_12864, and TFTGLCD_PANEL_(SPI|I2C) are currently supported on the BIGTREE_SKR_MINI_E3."
+    #error "Only CR10_STOCKDISPLAY, ZONESTAR_LCD, ENDER2_STOCKDISPLAY, MKS_MINI_12864, TFTGLCD_PANEL_(SPI|I2C) and ANET_FULL_GRAPHICS_LCD are currently supported on the BIGTREE_SKR_MINI_E3."
   #endif
 
 #endif // HAS_WIRED_LCD
