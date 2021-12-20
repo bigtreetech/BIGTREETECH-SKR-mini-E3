@@ -11,7 +11,7 @@
    * [firmware-USART2.bin](./firmware-USART2.bin) 使用 TFT 端口的 USART2 与树莓派通信. 通过杜邦线将树莓派的 UART-TX 接到主板的 USART-RX2 ，将树莓派的 UART-RX 接到主板的 USART-TX2 ，并且将地线连接在一起即可正常通信。
 
 2. 自行编译最新版本的固件<br/>
-   ***注意: Klipper 的源码在 [bigtreetech/Klipper/tree/SKR-mini-E3-V3.0-G0B1](https://github.com/bigtreetech/Klipper/tree/SKR-mini-E3-V3.0-G0B1)。截止到2021/11/15，Klipper上游的官方工程还不支持 STM32G0B1 系列 MCU, 所以请使用我们的工程编译你自己的 firmware.bin。我们会向 Klipper 官方提交支持 STM32G0B1 的 PR，此 PR 合并到上游官方工程后即可按照正常的步骤使用***
+   ***注意: Klipper 的源码在 [bigtreetech/Klipper/tree/SKR-mini-E3-V3.0-G0B1](https://github.com/bigtreetech/Klipper/tree/SKR-mini-E3-V3.0-G0B1)。截止到2021/12/20，Klipper上游的官方工程还不支持 STM32G0B1 系列 MCU, 所以请使用我们的工程编译你自己的 firmware.bin。我们会向 Klipper 官方提交支持 STM32G0B1 的 PR，此 PR 合并到上游官方工程后即可按照正常的步骤使用***
    1. 参考 [klipper官方的安装说明](https://www.klipper3d.org/Installation.html) 下载klipper源码到树莓派，但是在 STM32G0B1 系列的 MCU 合并到上游的官方工程之前，下载源码所使用的链接 `git clone https://github.com/Klipper3d/klipper` 需要更换为 `git clone -b SKR-mini-E3-V3.0-G0B1 https://github.com/bigtreetech/klipper`
    2. 使用下面的配置去编译固件
       * [*] Enable extra low-level configuration options

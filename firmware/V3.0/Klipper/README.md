@@ -12,7 +12,7 @@
    * [firmware-USART2.bin](./firmware-USART2.bin) Use TFT port USART2 to communicate with raspberry pi. Connect the UART-TX of raspberry pi with the USART-RX2 of motherboard and connect the UART-RX of raspberry pi with the USART-TX2 of motherboard directly to communicate normally.
 
 2. Build your own firmware<br/>
-   ***NOTE: Klipper source code in [bigtreetech/Klipper/tree/SKR-mini-E3-V3.0-G0B1](https://github.com/bigtreetech/Klipper/tree/SKR-mini-E3-V3.0-G0B1). Up to 2021/11/15, the upstream project of klipper does not support STM32G0B1 Series MCU, so please use our project to compile your own firmware.bin. And we will submit PR to klipper upstream support STM32G0B1 later, and the official project can be used after PR merged***
+   ***NOTE: Klipper source code in [bigtreetech/Klipper/tree/SKR-mini-E3-V3.0-G0B1](https://github.com/bigtreetech/Klipper/tree/SKR-mini-E3-V3.0-G0B1). Up to 2021/12/20, the upstream project of klipper does not support STM32G0B1 Series MCU, so please use our project to compile your own firmware.bin. And we will submit PR to klipper upstream support STM32G0B1 later, and the official project can be used after PR merged***
    1. Refer to [klipper's official installation](https://www.klipper3d.org/Installation.html) to download klipper source code to raspberry pi. But the link of `git clone https://github.com/Klipper3d/klipper` needs to be replaced with `git clone -b SKR-mini-E3-V3.0-G0B1 https://github.com/bigtreetech/klipper` before STM32G0B1 Series MCU be supported in upstream official project
    2. `Building the micro-controller` with the configuration shown below.
       * [*] Enable extra low-level configuration options
