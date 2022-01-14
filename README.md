@@ -2,7 +2,7 @@
 
 BIGTREETECH SKR Mini E3 V1.x and V2.x mainboards are ultra-quiet, low-power, high-quality 3D printing machine controller boards from BIQU.
 
-These and other SRK mmainboard/motherboard for 3D-printers are produced by the 3D printing team of Shenzhen Bigtree Technology Co., Ltd. 
+These and other SKR mainboard/motherboard for 3D-printers are produced by the 3D printing team of Shenzhen Bigtree Technology Co., Ltd. 
 
 The first BIGTREETECH SKR Mini E3 V1.x 32-bit control boards with integrated TMC stepper-drivers was initially specially designed to be a drop-in replacement upgrade board for the Ender 3 printers by Creality, making replacing the original 8-bit mainboard/motherboard hardware used by the very popular Ender-3 3D-printer quick and easy for most users. Software updates have since released also added compatibility for other 3D-printers with a single Z-axis stepping-motor, including support for CR-10, CR-10 Mini, Ender 3 Pro from Creality.
 
