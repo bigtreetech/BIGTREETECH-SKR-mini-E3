@@ -8,13 +8,14 @@
 
 ## Build Firmware Image
 
-1. * [firmware-USB.bin](./firmware-USB.bin) Use USB to communicate with raspberry pi. Connect the type-A USB of raspberry pi with the MicroUSB of motherboard directly to communicate normally.
+1. Precompiled firmware(The source code version used is [Commits on Jan 19, 2022](https://github.com/Klipper3d/klipper/commit/f97fd7c6e392e376bd1552afdd39a2150d3e21d0))
+   * [firmware-USB.bin](./firmware-USB.bin) Use USB to communicate with raspberry pi. Connect the type-A USB of raspberry pi with the MicroUSB of motherboard directly to communicate normally.
    * [firmware-USART2.bin](./firmware-USART2.bin) Use TFT port USART2 to communicate with raspberry pi. Connect the UART-TX of raspberry pi with the USART-RX2 of motherboard and connect the UART-RX of raspberry pi with the USART-TX2 of motherboard directly to communicate normally.
 
 2. Build your own firmware<br/>
-   ***NOTE: Klipper source code in [bigtreetech/Klipper/tree/SKR-mini-E3-V3.0-G0B1](https://github.com/bigtreetech/Klipper/tree/SKR-mini-E3-V3.0-G0B1). Up to 2021/12/20, the upstream project of klipper does not support STM32G0B1 Series MCU, so please use our project to compile your own firmware.bin. And we will submit PR to klipper upstream support STM32G0B1 later, and the official project can be used after PR merged***
-   1. Refer to [klipper's official installation](https://www.klipper3d.org/Installation.html) to download klipper source code to raspberry pi. But the link of `git clone https://github.com/Klipper3d/klipper` needs to be replaced with `git clone -b SKR-mini-E3-V3.0-G0B1 https://github.com/bigtreetech/klipper` before STM32G0B1 Series MCU be supported in upstream official project
-   2. `Building the micro-controller` with the configuration shown below.
+   ***NOTE: `STM32G0B1` has now been merged into the master branch of klipper's official github repository, so now we can use the steps on the klipper official website***
+   1. Refer to [klipper's official installation](https://www.klipper3d.org/Installation.html) to download klipper source code to raspberry pi.
+   2. `Building the micro-controller` with the configuration shown below. (If your klipper cannot select the following configuration, please update your klipper source code)
       * [*] Enable extra low-level configuration options
       * Micro-controller Architecture = `STMicroelectronics STM32`
       * Processor model = `STM32G0B1`

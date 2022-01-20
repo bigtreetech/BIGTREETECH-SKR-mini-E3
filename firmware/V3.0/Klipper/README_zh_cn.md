@@ -7,13 +7,14 @@
 * 此主板出厂时自带了引导程序，允许通过microSD卡更新固件(firmware.bin)。
 
 ## 编译固件
-1. * [firmware-USB.bin](./firmware-USB.bin) 使用 USB 与树莓派通信。直接通过数据线将树莓派的 USB-A 连接到主板的 MicroUSB 接口即可正常通信。
+1. 预编译的固件(预编译的固件源码版本是 [Commits on Jan 19, 2022](https://github.com/Klipper3d/klipper/commit/f97fd7c6e392e376bd1552afdd39a2150d3e21d0))
+   * [firmware-USB.bin](./firmware-USB.bin) 使用 USB 与树莓派通信。直接通过数据线将树莓派的 USB-A 连接到主板的 MicroUSB 接口即可正常通信。
    * [firmware-USART2.bin](./firmware-USART2.bin) 使用 TFT 端口的 USART2 与树莓派通信. 通过杜邦线将树莓派的 UART-TX 接到主板的 USART-RX2 ，将树莓派的 UART-RX 接到主板的 USART-TX2 ，并且将地线连接在一起即可正常通信。
 
 2. 自行编译最新版本的固件<br/>
-   ***注意: Klipper 的源码在 [bigtreetech/Klipper/tree/SKR-mini-E3-V3.0-G0B1](https://github.com/bigtreetech/Klipper/tree/SKR-mini-E3-V3.0-G0B1)。截止到2021/12/20，Klipper上游的官方工程还不支持 STM32G0B1 系列 MCU, 所以请使用我们的工程编译你自己的 firmware.bin。我们会向 Klipper 官方提交支持 STM32G0B1 的 PR，此 PR 合并到上游官方工程后即可按照正常的步骤使用***
-   1. 参考 [klipper官方的安装说明](https://www.klipper3d.org/Installation.html) 下载klipper源码到树莓派，但是在 STM32G0B1 系列的 MCU 合并到上游的官方工程之前，下载源码所使用的链接 `git clone https://github.com/Klipper3d/klipper` 需要更换为 `git clone -b SKR-mini-E3-V3.0-G0B1 https://github.com/bigtreetech/klipper`
-   2. 使用下面的配置去编译固件
+   ***注意: `STM32G0B1` 已经合并到 Klipper 官方 github 的 master 分支中了，所以现在我们可以完全使用 Klipper 官网的教程步骤了***
+   1. 参考 [klipper官方的安装说明](https://www.klipper3d.org/Installation.html) 下载klipper源码到树莓派
+   2. 使用下面的配置去编译固件 (如果您的klipper无法选择如下的配置，请更新您的klipper源码)
       * [*] Enable extra low-level configuration options
       * Micro-controller Architecture = `STMicroelectronics STM32`
       * Processor model = `STM32G0B1`
