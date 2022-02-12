@@ -1,4 +1,3 @@
-## BigTreeTech SKR-mini-E3-V3.0
-
-### review
-　You can find a complete review with detailed features of our electronics in [here](https://3dwork.io/en/skr-mini-e3-v3) on [3dwork.io](https://3dwork.io/).
+# Ender-3-SKR-Mini-E3-V3-Marlin 2.0.9.3 -Firmware
+Marlin 2.0.9.3 with BL Touch 5 cable plugged at Probeslot 
+M0/M1 Stop issue in gcode.cpp deaktivated
