@@ -7,7 +7,7 @@
 * 此主板出厂时自带了引导程序，允许通过microSD卡更新固件(firmware.bin)。
 
 ## 编译固件
-1. 预编译的固件(预编译的固件源码版本是 [Commits on Jan 19, 2022](https://github.com/Klipper3d/klipper/commit/f97fd7c6e392e376bd1552afdd39a2150d3e21d0))
+1. 预编译的固件(预编译的固件源码版本是 [Commits on Mar 10, 2022](https://github.com/Klipper3d/klipper/commit/4ce2d379bb538085c960eedd5fd1dd393f497bb7))
    * [firmware-USB.bin](./firmware-USB.bin) 使用 USB 与树莓派通信。直接通过数据线将树莓派的 USB-A 连接到主板的 MicroUSB 接口即可正常通信。
    * [firmware-USART2.bin](./firmware-USART2.bin) 使用 TFT 端口的 USART2 与树莓派通信. 通过杜邦线将树莓派的 UART-TX 接到主板的 USART-RX2 ，将树莓派的 UART-RX 接到主板的 USART-TX2 ，并且将地线连接在一起即可正常通信。
 

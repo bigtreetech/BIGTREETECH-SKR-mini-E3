@@ -8,7 +8,7 @@
 
 ## Build Firmware Image
 
-1. Precompiled firmware(The source code version used is [Commits on Jan 19, 2022](https://github.com/Klipper3d/klipper/commit/f97fd7c6e392e376bd1552afdd39a2150d3e21d0))
+1. Precompiled firmware(The source code version used is [Commits on Mar 10, 2022](https://github.com/Klipper3d/klipper/commit/4ce2d379bb538085c960eedd5fd1dd393f497bb7))
    * [firmware-USB.bin](./firmware-USB.bin) Use USB to communicate with raspberry pi. Connect the type-A USB of raspberry pi with the MicroUSB of motherboard directly to communicate normally.
    * [firmware-USART2.bin](./firmware-USART2.bin) Use TFT port USART2 to communicate with raspberry pi. Connect the UART-TX of raspberry pi with the USART-RX2 of motherboard and connect the UART-RX of raspberry pi with the USART-TX2 of motherboard directly to communicate normally.
 
