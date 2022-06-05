@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2021 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -20,8 +20,6 @@
  *
  */
 #pragma once
-
-#define CONFIG_EXAMPLES_DIR "Creality/Ender-3/BigTreeTech SKR Mini E3 3.0"
 
 /**
  * Configuration_adv.h
@@ -50,7 +48,7 @@
  *
  * Set this value to 0 to fail on the first error to occur.
  */
-#define THERMOCOUPLE_MAX_ERRORS 15
+#define THERMOCOUPLE_MAX_ERRORS 20
 
 //
 // Custom Thermistor 1000 parameters
@@ -144,20 +142,11 @@
  *   FORCE_HW_SPI:   Ignore SCK/MOSI/MISO pins and just use the CS pin & default SPI bus.
  *   MAX31865_WIRES: Set the number of wires for the probe connected to a MAX31865 board, 2-4. Default: 2
  *   MAX31865_50HZ:  Enable 50Hz filter instead of the default 60Hz.
- *   MAX31865_USE_READ_ERROR_DETECTION: Detects random read errors from value spikes (a 20°C difference in less than 1sec)
- *   MAX31865_USE_AUTO_MODE: Faster and more frequent reads than 1-shot, but bias voltage always on, slightly affecting RTD temperature.
- *   MAX31865_MIN_SAMPLING_TIME_MSEC: in 1-shot mode, the minimum time between subsequent reads. This reduces the effect of bias voltage by leaving the sensor unpowered for longer intervals.
- *   MAX31865_WIRE_OHMS: In 2-wire configurations, manually set the wire resistance for more accurate readings
  */
 //#define TEMP_SENSOR_FORCE_HW_SPI
 //#define MAX31865_SENSOR_WIRES_0 2
 //#define MAX31865_SENSOR_WIRES_1 2
 //#define MAX31865_50HZ_FILTER
-//#define MAX31865_USE_READ_ERROR_DETECTION
-//#define MAX31865_USE_AUTO_MODE
-//#define MAX31865_MIN_SAMPLING_TIME_MSEC 100
-//#define MAX31865_WIRE_OHMS_0 0.0f
-//#define MAX31865_WIRE_OHMS_1 0.0f
 
 /**
  * Hephestos 2 24V heated bed upgrade kit.
@@ -438,7 +427,7 @@
 
 // Show Temperature ADC value
 // Enable for M105 to include ADC values read from temperature sensors.
-//#define SHOW_TEMP_ADC_VALUES
+#define SHOW_TEMP_ADC_VALUES
 
 /**
  * High Temperature Thermistor Support
@@ -458,7 +447,7 @@
 
 // The number of consecutive low temperature errors that can occur
 // before a min_temp_error is triggered. (Shouldn't be more than 10.)
-//#define MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED 0
+#define MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED 10
 
 // The number of milliseconds a hotend will preheat before starting to check
 // the temperature. This value should NOT be set to the time it takes the
@@ -551,21 +540,18 @@
 //#define FAN_MAX_PWM 128
 
 /**
- * Fan Fast PWM
+ * FAST PWM FAN Settings
  *
- * Combinations of PWM Modes, prescale values and TOP resolutions are used internally
- * to produce a frequency as close as possible to the desired frequency.
+ * Use to change the FAST FAN PWM frequency (if enabled in Configuration.h)
+ * Combinations of PWM Modes, prescale values and TOP resolutions are used internally to produce a
+ * frequency as close as possible to the desired frequency.
  *
- * FAST_PWM_FAN_FREQUENCY
+ * FAST_PWM_FAN_FREQUENCY [undefined by default]
  *   Set this to your desired frequency.
- *   For AVR, if left undefined this defaults to F = F_CPU/(2*255*1)
- *            i.e., F = 31.4kHz on 16MHz microcontrollers or F = 39.2kHz on 20MHz microcontrollers.
- *   For non AVR, if left undefined this defaults to F = 1Khz.
- *   This F value is only to protect the hardware from an absence of configuration
- *   and not to complete it when users are not aware that the frequency must be specifically set to support the target board.
- *
+ *   If left undefined this defaults to F = F_CPU/(2*255*1)
+ *   i.e., F = 31.4kHz on 16MHz microcontrollers or F = 39.2kHz on 20MHz microcontrollers.
+ *   These defaults are the same as with the old FAST_PWM_FAN implementation - no migration is required
  *   NOTE: Setting very low frequencies (< 10 Hz) may result in unexpected timer behavior.
- *         Setting very high frequencies can damage your hardware.
  *
  * USE_OCR2A_AS_TOP [undefined by default]
  *   Boards that use TIMER2 for PWM have limitations resulting in only a few possible frequencies on TIMER2:
@@ -575,17 +561,9 @@
  *   PWM on pin OC2A. Only use this option if you don't need PWM on 0C2A. (Check your schematic.)
  *   USE_OCR2A_AS_TOP sacrifices duty cycle control resolution to achieve this broader range of frequencies.
  */
-//#define FAST_PWM_FAN    // Increase the fan PWM frequency. Removes the PWM noise but increases heating in the FET/Arduino
 #if ENABLED(FAST_PWM_FAN)
-  //#define FAST_PWM_FAN_FREQUENCY 31400  // Define here to override the defaults below
+  //#define FAST_PWM_FAN_FREQUENCY 31400
   //#define USE_OCR2A_AS_TOP
-  #ifndef FAST_PWM_FAN_FREQUENCY
-    #ifdef __AVR__
-      #define FAST_PWM_FAN_FREQUENCY ((F_CPU) / (2 * 255 * 1))
-    #else
-      #define FAST_PWM_FAN_FREQUENCY 1000U
-    #endif
-  #endif
 #endif
 
 /**
@@ -873,7 +851,7 @@
 
   // Safety: The probe needs time to recognize the command.
   //         Minimum command delay (ms). Enable and increase if needed.
-  #define BLTOUCH_DELAY 200
+  #define BLTOUCH_DELAY 500
 
   /**
    * Settings for BLTOUCH Classic 1.2, 1.3 or BLTouch Smart 1.0, 2.0, 2.2, 3.0, 3.1, and most clones:
@@ -910,14 +888,12 @@
   //#define BLTOUCH_FORCE_MODE_SET
 
   /**
-   * Enable "HIGH SPEED" option for probing.
+   * Use "HIGH SPEED" mode for probing.
    * Danger: Disable if your probe sometimes fails. Only suitable for stable well-adjusted systems.
    * This feature was designed for Deltabots with very fast Z moves; however, higher speed Cartesians
    * might be able to use it. If the machine can't raise Z fast enough the BLTouch may go into ALARM.
-   *
-   * Set the default state here, change with 'M401 S' or UI, use M500 to save, M502 to reset.
    */
-  #define BLTOUCH_HS_MODE true
+  //#define BLTOUCH_HS_MODE
 
   // Safety: Enable voltage mode settings in the LCD menu.
   //#define BLTOUCH_LCD_VOLTAGE_MENU
@@ -1282,7 +1258,7 @@
 
   // Add Probe Z Offset calibration to the Z Probe Offsets menu
   #if HAS_BED_PROBE
-    #define PROBE_OFFSET_WIZARD
+    //#define PROBE_OFFSET_WIZARD
     #if ENABLED(PROBE_OFFSET_WIZARD)
       //
       // Enable to init the Probe Z-Offset when starting the Wizard.
@@ -1462,14 +1438,14 @@
   //#define POWER_LOSS_RECOVERY
   #if ENABLED(POWER_LOSS_RECOVERY)
     #define PLR_ENABLED_DEFAULT   false // Power Loss Recovery enabled by default. (Set with 'M413 Sn' & M500)
-    #define BACKUP_POWER_SUPPLY         // Backup power / UPS to move the steppers on power loss
-    #define POWER_LOSS_ZRAISE       2   // (mm) Z axis raise on resume (on power loss with UPS)
+    #define BACKUP_POWER_SUPPLY       // Backup power / UPS to move the steppers on power loss
+    #define POWER_LOSS_ZRAISE       2 // (mm) Z axis raise on resume (on power loss with UPS)
     //#define POWER_LOSS_PIN         44 // Pin to detect power loss. Set to -1 to disable default pin on boards without module.
-    #define POWER_LOSS_STATE     HIGH   // State of pin indicating power loss
-    #define POWER_LOSS_PULLUP           // Set pullup / pulldown as appropriate for your sensor
+    #define POWER_LOSS_STATE     HIGH // State of pin indicating power loss
+    #define POWER_LOSS_PULLUP         // Set pullup / pulldown as appropriate for your sensor
     //#define POWER_LOSS_PULLDOWN
-    #define POWER_LOSS_PURGE_LEN   20   // (mm) Length of filament to purge on resume
-    #define POWER_LOSS_RETRACT_LEN 10   // (mm) Length of filament to retract on fail. Requires backup power.
+    #define POWER_LOSS_PURGE_LEN   20 // (mm) Length of filament to purge on resume
+    #define POWER_LOSS_RETRACT_LEN 10 // (mm) Length of filament to retract on fail. Requires backup power.
 
     // Without a POWER_LOSS_PIN the following option helps reduce wear on the SD card,
     // especially with "vase mode" printing. Set too high and vases cannot be continued.
@@ -1607,14 +1583,6 @@
     #define SD_FIRMWARE_UPDATE_ACTIVE_VALUE   0xF0
     #define SD_FIRMWARE_UPDATE_INACTIVE_VALUE 0xFF
   #endif
-
-  /**
-   * Enable this option if you have more than ~3K of unused flash space.
-   * Marlin will embed all settings in the firmware binary as compressed data.
-   * Use 'M503 C' to write the settings out to the SD Card as 'mc.zip'.
-   * See docs/ConfigEmbedding.md for details on how to use 'mc-apply.py'.
-   */
-  //#define CONFIGURATION_EMBEDDING
 
   // Add an optimized binary file transfer mode, initiated with 'M28 B1'
   //#define BINARY_FILE_TRANSFER
@@ -2431,7 +2399,7 @@
     // Longer prime to clean out a SINGLENOZZLE
     #define TOOLCHANGE_FS_EXTRA_PRIME          0  // (mm) Extra priming length
     #define TOOLCHANGE_FS_PRIME_SPEED    (4.6*60) // (mm/min) Extra priming feedrate
-    #define TOOLCHANGE_FS_WIPE_RETRACT         0  // (mm) Retract before cooling for less stringing, better wipe, etc.
+    #define TOOLCHANGE_FS_WIPE_RETRACT         0  // (mm/min) Retract before cooling for less stringing, better wipe, etc.
 
     // Cool after prime to reduce stringing
     #define TOOLCHANGE_FS_FAN                 -1  // Fan index or -1 to skip
@@ -2692,7 +2660,6 @@
     #define X_RSENSE          0.11
     #define X_CHAIN_POS      -1        // -1..0: Not chained. 1: MCU MOSI connected. 2: Next in chain, ...
     //#define X_INTERPOLATE  true      // Enable to override 'INTERPOLATE' for the X axis
-    //#define X_HOLD_MULTIPLIER 0.5    // Enable to override 'HOLD_MULTIPLIER' for the X axis
   #endif
 
   #if AXIS_IS_TMC(X2)
@@ -2702,7 +2669,6 @@
     #define X2_RSENSE         0.11
     #define X2_CHAIN_POS     -1
     //#define X2_INTERPOLATE true
-    //#define X2_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(Y)
@@ -2712,7 +2678,6 @@
     #define Y_RSENSE          0.11
     #define Y_CHAIN_POS      -1
     //#define Y_INTERPOLATE  true
-    //#define Y_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(Y2)
@@ -2722,7 +2687,6 @@
     #define Y2_RSENSE         0.11
     #define Y2_CHAIN_POS     -1
     //#define Y2_INTERPOLATE true
-    //#define Y2_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(Z)
@@ -2732,7 +2696,6 @@
     #define Z_RSENSE          0.11
     #define Z_CHAIN_POS      -1
     //#define Z_INTERPOLATE  true
-    //#define Z_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(Z2)
@@ -2742,7 +2705,6 @@
     #define Z2_RSENSE         0.11
     #define Z2_CHAIN_POS     -1
     //#define Z2_INTERPOLATE true
-    //#define Z2_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(Z3)
@@ -2752,7 +2714,6 @@
     #define Z3_RSENSE         0.11
     #define Z3_CHAIN_POS     -1
     //#define Z3_INTERPOLATE true
-    //#define Z3_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(Z4)
@@ -2762,7 +2723,6 @@
     #define Z4_RSENSE         0.11
     #define Z4_CHAIN_POS     -1
     //#define Z4_INTERPOLATE true
-    //#define Z4_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(I)
@@ -2772,7 +2732,6 @@
     #define I_RSENSE         0.11
     #define I_CHAIN_POS     -1
     //#define I_INTERPOLATE  true
-    //#define I_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(J)
@@ -2782,7 +2741,6 @@
     #define J_RSENSE         0.11
     #define J_CHAIN_POS     -1
     //#define J_INTERPOLATE  true
-    //#define J_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(K)
@@ -2792,7 +2750,6 @@
     #define K_RSENSE         0.11
     #define K_CHAIN_POS     -1
     //#define K_INTERPOLATE  true
-    //#define K_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(E0)
@@ -2801,7 +2758,6 @@
     #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
     //#define E0_INTERPOLATE true
-    //#define E0_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(E1)
@@ -2810,7 +2766,6 @@
     #define E1_RSENSE         0.11
     #define E1_CHAIN_POS     -1
     //#define E1_INTERPOLATE true
-    //#define E1_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(E2)
@@ -2819,7 +2774,6 @@
     #define E2_RSENSE         0.11
     #define E2_CHAIN_POS     -1
     //#define E2_INTERPOLATE true
-    //#define E2_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(E3)
@@ -2828,7 +2782,6 @@
     #define E3_RSENSE         0.11
     #define E3_CHAIN_POS     -1
     //#define E3_INTERPOLATE true
-    //#define E3_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(E4)
@@ -2837,7 +2790,6 @@
     #define E4_RSENSE         0.11
     #define E4_CHAIN_POS     -1
     //#define E4_INTERPOLATE true
-    //#define E4_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(E5)
@@ -2846,7 +2798,6 @@
     #define E5_RSENSE         0.11
     #define E5_CHAIN_POS     -1
     //#define E5_INTERPOLATE true
-    //#define E5_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(E6)
@@ -2855,7 +2806,6 @@
     #define E6_RSENSE         0.11
     #define E6_CHAIN_POS     -1
     //#define E6_INTERPOLATE true
-    //#define E6_HOLD_MULTIPLIER 0.5
   #endif
 
   #if AXIS_IS_TMC(E7)
@@ -2864,7 +2814,6 @@
     #define E7_RSENSE         0.11
     #define E7_CHAIN_POS     -1
     //#define E7_INTERPOLATE true
-    //#define E7_HOLD_MULTIPLIER 0.5
   #endif
 
   /**
@@ -3730,7 +3679,7 @@
  */
 #define EXTENDED_CAPABILITIES_REPORT
 #if ENABLED(EXTENDED_CAPABILITIES_REPORT)
-  //#define M115_GEOMETRY_REPORT
+  #define M115_GEOMETRY_REPORT
 #endif
 
 /**
