@@ -25,3 +25,7 @@ Disclaimer! Marlin firmware needs to be configured aND CUSTOMIZED by the custome
  ## History
  
  - 18-21th of May - Added BTT SKR Mini E3 v2.0 motherboard firmware and related open source materials.
+
+##This Fork Includes:
+Fix for Cr Touch Crashing into bed
+
