@@ -35,7 +35,7 @@
 
 ## Firmware Installation
 1. You can use the method in [Build Firmware Image 2.5](#build-firmware-image) or use a tool such as `cyberduck` or `winscp` to copy the `klipper.bin` file from your pi to your computer.
-2. Renamed the `firmware-USB.bin`, `firmware-USART2.bin` or the `klipper.bin`(in folder `home/pi/kliiper/out` build by yourself) to `firmware.bin`<br/>
+2. Renamed the `firmware-USB.bin`, `firmware-USART2.bin` or the `klipper.bin`(in folder `home/pi/klipper/out` build by yourself) to `firmware.bin`<br/>
 **Important:** If the file is not renamed, the bootloader will not be updated properly.
 3. Copy the `firmware.bin` to the root directory of SD card (make sure SD card is in FAT32 format)
 4. power off the SKR-mini-E3-V3.0
